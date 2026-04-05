@@ -1,7 +1,7 @@
 import { existsSync } from "fs";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
-import { put, del } from "@vercel/blob";
+import { put, del, getDownloadUrl } from "@vercel/blob";
 
 /**
  * Result from uploading a file to storage
@@ -155,11 +155,12 @@ export async function upload(
     // Use Vercel Blob storage
     const pathname = folder ? `${folder}/${sanitizedFilename}` : sanitizedFilename;
     const blob = await put(pathname, buffer, {
-      access: "public",
+      access: "private",
     });
+    const downloadUrl = await getDownloadUrl(blob.url);
 
     return {
-      url: blob.url,
+      url: downloadUrl,
       pathname: blob.pathname,
     };
   } else {

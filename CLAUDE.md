@@ -1,8 +1,10 @@
-# Agentic Coding Boilerplate - AI Assistant Guidelines
+# MedBuddy 藥好友 - AI Assistant Guidelines
 
 ## Project Overview
 
-This is a Next.js 16 boilerplate for building AI-powered applications with authentication, database, and modern UI components.
+MedBuddy is a medication companion app for elderly chronic care patients in Taiwan. Features include prescription scanning, medication management, reminders, dose confirmation, AI chat companion, and caretaker view. Primary locale is Traditional Chinese (zh-TW).
+
+**For a complete list of implemented features, their status, and what's not yet built, see [`docs/FEATURE-STATUS.md`](docs/FEATURE-STATUS.md).**
 
 ### Tech Stack
 
@@ -19,7 +21,7 @@ This is a Next.js 16 boilerplate for building AI-powered applications with authe
 
 - This project uses **OpenRouter** as the AI provider, NOT direct OpenAI
 - OpenRouter provides access to 100+ AI models through a single unified API
-- Default model: `openai/gpt-5-mini` (configurable via `OPENROUTER_MODEL` env var)
+- Default model: `google/gemini-3-flash-preview` (configurable via `OPENROUTER_MODEL` env var)
 - Users browse models at: https://openrouter.ai/models
 - Users get API keys from: https://openrouter.ai/settings/keys
 
@@ -34,50 +36,48 @@ This is a Next.js 16 boilerplate for building AI-powered applications with authe
 ```
 src/
 ├── app/                          # Next.js App Router
-│   ├── (auth)/                  # Auth route group
-│   │   ├── login/               # Login page
-│   │   ├── register/            # Registration page
-│   │   ├── forgot-password/     # Forgot password page
-│   │   └── reset-password/      # Reset password page
+│   ├── [locale]/                # i18n routes (zh-TW, en)
+│   │   ├── (app)/              # Authenticated app pages
+│   │   │   ├── home/           # Today's medication timeline
+│   │   │   ├── medications/    # Medication list, add, scan
+│   │   │   ├── chat/           # AI companion chat
+│   │   │   ├── profile/        # User profile
+│   │   │   ├── caretaker/      # Linked patient view
+│   │   │   └── onboarding/     # New user setup
+│   │   └── layout.tsx
 │   ├── api/
-│   │   ├── auth/[...all]/       # Better Auth catch-all route
-│   │   ├── chat/route.ts        # AI chat endpoint (OpenRouter)
-│   │   └── diagnostics/         # System diagnostics
-│   ├── chat/page.tsx            # AI chat interface (protected)
-│   ├── dashboard/page.tsx       # User dashboard (protected)
-│   ├── profile/page.tsx         # User profile (protected)
-│   ├── page.tsx                 # Home/landing page
-│   └── layout.tsx               # Root layout
+│   │   ├── auth/[...all]/      # Better Auth catch-all route
+│   │   ├── chat/               # AI chat endpoint (OpenRouter)
+│   │   ├── medications/        # Medication CRUD + scan
+│   │   ├── adherence/          # Dose logging
+│   │   ├── interactions/       # Drug interaction checks
+│   │   ├── caretaker/          # Patient data for caretakers
+│   │   ├── onboarding/         # Onboarding flow
+│   │   ├── profile/            # User profile
+│   │   └── telegram/           # Telegram bot webhook
+│   └── layout.tsx              # Root layout
 ├── components/
-│   ├── auth/                    # Authentication components
-│   │   ├── sign-in-button.tsx   # Sign in form
-│   │   ├── sign-up-form.tsx     # Sign up form
-│   │   ├── forgot-password-form.tsx
-│   │   ├── reset-password-form.tsx
-│   │   ├── sign-out-button.tsx
-│   │   └── user-profile.tsx
-│   ├── ui/                      # shadcn/ui components
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── dialog.tsx
-│   │   ├── dropdown-menu.tsx
-│   │   ├── avatar.tsx
-│   │   ├── badge.tsx
-│   │   ├── separator.tsx
-│   │   ├── mode-toggle.tsx      # Dark/light mode toggle
-│   │   └── github-stars.tsx
-│   ├── site-header.tsx          # Main navigation header
-│   ├── site-footer.tsx          # Footer component
-│   ├── theme-provider.tsx       # Dark mode provider
-│   ├── setup-checklist.tsx      # Setup guide component
-│   └── starter-prompt-modal.tsx # Starter prompts modal
+│   ├── auth/                   # Authentication components
+│   ├── ui/                     # shadcn/ui components
+│   ├── med-card.tsx            # Medication card
+│   ├── chat-bubble.tsx         # Chat message bubble
+│   ├── voice-button.tsx        # Voice input button
+│   ├── bottom-nav.tsx          # Mobile tab navigation
+│   └── theme-provider.tsx      # Dark mode provider
+├── i18n/                       # Internationalization config
+├── messages/                   # Translation files (zh-TW, en)
 └── lib/
-    ├── auth.ts                  # Better Auth server config
-    ├── auth-client.ts           # Better Auth client hooks
-    ├── db.ts                    # Database connection
-    ├── schema.ts                # Drizzle schema (users, sessions, etc.)
-    ├── storage.ts               # File storage abstraction (Vercel Blob / local)
-    └── utils.ts                 # Utility functions (cn, etc.)
+    ├── ai.ts                   # OpenRouter wrapper
+    ├── auth.ts                 # Better Auth server config
+    ├── auth-client.ts          # Better Auth client hooks
+    ├── chat-prompt.ts          # AI chat system prompt
+    ├── constants.ts            # App constants
+    ├── db.ts                   # Database connection
+    ├── drugs.ts                # Drug interaction checks
+    ├── schema.ts               # Drizzle schema
+    ├── storage.ts              # File storage abstraction
+    ├── telegram.ts             # Telegram bot setup
+    └── utils.ts                # Utility functions
 ```
 
 ## Environment Variables
@@ -121,13 +121,12 @@ npm run db:reset     # Reset database (drop all tables)
 
 ## Documentation Files
 
-The project includes technical documentation in `docs/`:
+The project includes documentation in `docs/`:
 
 - `docs/technical/ai/streaming.md` - AI streaming implementation guide
 - `docs/technical/ai/structured-data.md` - Structured data extraction
 - `docs/technical/react-markdown.md` - Markdown rendering guide
-- `docs/technical/betterauth/polar.md` - Polar payment integration
-- `docs/business/starter-prompt.md` - Business context for AI prompts
+- `docs/business/starter-prompt.md` - MVP build plan and product context
 
 ## Guidelines for AI Assistants
 
@@ -170,6 +169,8 @@ The project includes technical documentation in `docs/`:
    - Schema is defined in `@/lib/schema`
    - Always run migrations after schema changes
    - PostgreSQL is the database (not SQLite, MySQL, etc.)
+   - **Never use raw `sql` template tags** for filtering or conditions — use Drizzle's built-in operators (`eq`, `and`, `inArray`, `gte`, `lt`, `like`, `between`, etc.) which handle parameter binding correctly
+   - For subqueries, use Drizzle's `.as()`, `.unionAll()`, and query builder methods instead of raw SQL strings
 
 7. **File Storage**
 
@@ -244,7 +245,4 @@ The project includes technical documentation in `docs/`:
 
 ## Package Manager
 
-This project uses **pnpm** (see `pnpm-lock.yaml`). When running commands:
-
-- Use `pnpm` instead of `npm` when possible
-- Scripts defined in package.json work with `pnpm run [script]`
+This project uses **npm**. Run scripts with `npm run [script]`.

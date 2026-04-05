@@ -1,13 +1,19 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Link } from "@/i18n/routing"
 import { requestPasswordReset } from "@/lib/auth-client"
 
 export function ForgotPasswordForm() {
+  const locale = useLocale()
+  const localePrefix = locale === "zh-TW" ? "" : `/${locale}`
+  const t = useTranslations("authPages.forgotPassword")
+  const tAuth = useTranslations("auth")
+  const tErrors = useTranslations("authPages.errors")
   const [email, setEmail] = useState("")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
@@ -21,16 +27,16 @@ export function ForgotPasswordForm() {
     try {
       const result = await requestPasswordReset({
         email,
-        redirectTo: "/reset-password",
+        redirectTo: `${localePrefix}/reset-password`,
       })
 
       if (result.error) {
-        setError(result.error.message || "Failed to send reset email")
+        setError(result.error.message || tErrors("resetFailed"))
       } else {
         setSuccess(true)
       }
     } catch {
-      setError("An unexpected error occurred")
+      setError(tErrors("unexpected"))
     } finally {
       setIsPending(false)
     }
@@ -40,12 +46,11 @@ export function ForgotPasswordForm() {
     return (
       <div className="space-y-4 w-full max-w-sm text-center">
         <p className="text-sm text-muted-foreground">
-          If an account exists with that email, a password reset link has been sent.
-          Check your terminal for the reset URL.
+          {t("successMessage")}
         </p>
         <Link href="/login">
           <Button variant="outline" className="w-full">
-            Back to sign in
+            {t("backToSignIn")}
           </Button>
         </Link>
       </div>
@@ -55,27 +60,28 @@ export function ForgotPasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-sm">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{tAuth("email")}</Label>
         <Input
           id="email"
           type="email"
-          placeholder="you@example.com"
+          placeholder={t("emailPlaceholder")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           disabled={isPending}
+          className="min-h-12 text-base"
         />
       </div>
       {error && (
         <p className="text-sm text-destructive">{error}</p>
       )}
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "Sending..." : "Send reset link"}
+      <Button type="submit" className="min-h-12 w-full" disabled={isPending}>
+        {isPending ? t("sending") : t("sendResetLink")}
       </Button>
       <div className="text-center text-sm text-muted-foreground">
-        Remember your password?{" "}
+        {t("rememberPassword")}{" "}
         <Link href="/login" className="text-primary hover:underline">
-          Sign in
+          {tAuth("signIn")}
         </Link>
       </div>
     </form>

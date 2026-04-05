@@ -1,94 +1,292 @@
-I'm working with an agentic coding boilerplate project that includes authentication, database integration, and AI capabilities. Here's what's already set up:
 
-## Current Agentic Coding Boilerplate Structure
+# MedBuddy — MVP Build Plan
 
-- **Authentication**: Better Auth with Google OAuth integration
-- **Database**: Drizzle ORM with PostgreSQL setup
-- **AI Integration**: Vercel AI SDK with OpenAI integration
-- **UI**: shadcn/ui components with Tailwind CSS
-- **Current Routes**:
-  - `/` - Home page with setup instructions and feature overview
-  - `/dashboard` - Protected dashboard page (requires authentication)
-  - `/chat` - AI chat interface (requires OpenAI API key)
+## What is this?
+MedBuddy is a medication companion for elderly chronic care patients. Scan prescriptions, understand your meds, get reminders, confirm doses, chat with an AI companion. Taiwan (Traditional Chinese) is the primary market.
 
-## Important Context
 
-This is an **agentic coding boilerplate/starter template** - all existing pages and components are meant to be examples and should be **completely replaced** to build the actual AI-powered application.
+## MVP Scope — What We Build
+1. **Scan prescription** → OCR + LLM extracts medications → user confirms
+2. **Understand medications** → plain-language explanation of each med, interaction/duplication warnings
+3. **Reminders** → scheduled notifications via web + Telegram bot with emoji buttons
+4. **Confirm doses** → one-tap confirmation, logs adherence
+5. **AI chat companion** → answer medication questions, voice input/output, never give medical advice
+6. **Caretaker view** — simple page showing patient's today schedule + adherence status
 
-### CRITICAL: You MUST Override All Boilerplate Content
+That's it. No vital signs, no doctor reports, no nutrition tracking, no IoT. Those come later.
 
-**DO NOT keep any boilerplate components, text, or UI elements unless explicitly requested.** This includes:
+## Two Interfaces
+1. **Mobile-first web app** — patient-facing, elderly-optimized
+2. **Telegram bot** — reminders + confirmations + chat (proves messaging pattern before LINE)
 
-- **Remove all placeholder/demo content** (setup checklists, welcome messages, boilerplate text)
-- **Replace the entire navigation structure** - don't keep the existing site header or nav items
-- **Override all page content completely** - don't append to existing pages, replace them entirely
-- **Remove or replace all example components** (setup-checklist, starter-prompt-modal, etc.)
-- **Replace placeholder routes and pages** with the actual application functionality
-
-### Required Actions:
-
-1. **Start Fresh**: Treat existing components as temporary scaffolding to be removed
-2. **Complete Replacement**: Build the new application from scratch using the existing tech stack
-3. **No Hybrid Approach**: Don't try to integrate new features alongside existing boilerplate content
-4. **Clean Slate**: The final application should have NO trace of the original boilerplate UI or content
-
-The only things to preserve are:
-
-- **All installed libraries and dependencies** (DO NOT uninstall or remove any packages from package.json)
-- **Authentication system** (but customize the UI/flow as needed)
-- **Database setup and schema** (but modify schema as needed for your use case)
-- **Core configuration files** (next.config.ts, tsconfig.json, tailwind.config.ts, etc.)
-- **Build and development scripts** (keep all npm/pnpm scripts in package.json)
+Caretaker view is a simple page within the web app, not a separate dashboard.
 
 ## Tech Stack
+- **LLM**: OpenRouter API (`openai` npm SDK pointed at `https://openrouter.ai/api/v1`). Model configurable via env var.
+- **Voice**: Browser-native Web Speech API (STT + TTS). Graceful fallback if unsupported.
+- **OCR**: Send prescription photo directly to OpenRouter vision model — skip Tesseract, keep it simple. Claude/Gemini vision models handle multilingual labels well enough for MVP.
+- **Drug data**: OpenFDA API for interaction checks. Simple local lookup table for common Taiwan medications as fallback.
+- **Telegram**: grammy.js as Next.js API route webhook
+- **i18n**: next-intl (zh-TW primary, en). Japanese/Korean are post-MVP.
 
-- Next.js 16 with App Router
-- TypeScript
-- Tailwind CSS
-- Better Auth for authentication
-- Drizzle ORM + PostgreSQL
-- Vercel AI SDK
-- shadcn/ui components
-- Lucide React icons
+## Database Schema (Drizzle)
 
-## Component Development Guidelines
+Keep it flat and simple. No premature normalization.
 
-**Always prioritize shadcn/ui components** when building the application:
+```sql
+-- users
+id            uuid PK (supabase auth)
+name          text
+locale        text default 'zh-TW'
+phone         text
+telegram_chat_id text nullable
+role          text default 'patient'  -- 'patient' | 'caretaker'
+created_at    timestamptz
 
-1. **First Choice**: Use existing shadcn/ui components from the project
-2. **Second Choice**: Install additional shadcn/ui components using `pnpm dlx shadcn@latest add <component-name>`
-3. **Last Resort**: Only create custom components or use other libraries if shadcn/ui doesn't provide a suitable option
+-- caretaker_links
+id            uuid PK
+caretaker_id  uuid FK→users
+patient_id    uuid FK→users
+invite_code   text unique
+created_at    timestamptz
 
-The project already includes several shadcn/ui components (button, dialog, avatar, etc.) and follows their design system. Always check the [shadcn/ui documentation](https://ui.shadcn.com/docs/components) for available components before implementing alternatives.
+-- medications
+id            uuid PK
+user_id       uuid FK→users
+name          text
+name_local    text nullable
+dosage        text
+purpose       text nullable          -- LLM-generated explanation
+timing        text[] default '{}'    -- ['morning','evening','bedtime']
+active        boolean default true
+scan_data     jsonb nullable         -- raw OCR/LLM output for audit
+created_at    timestamptz
 
-## What I Want to Build
+-- interactions (generated on medication add)
+id            uuid PK
+user_id       uuid FK→users
+med_a_id      uuid FK→medications
+med_b_id      uuid FK→medications
+type          text                   -- 'duplication' | 'interaction'
+severity      text                   -- 'low' | 'medium' | 'high'
+description   text
+created_at    timestamptz
 
-Basic todo list app with the ability for users to add, remove, update, complete and view todos.
+-- reminders
+id            uuid PK
+user_id       uuid FK→users
+time_slot     text                   -- 'morning' | 'afternoon' | 'evening' | 'bedtime'
+scheduled_time time                  -- e.g. 08:00
+active        boolean default true
+created_at    timestamptz
 
-## Request
+-- adherence_logs
+id            uuid PK
+user_id       uuid FK→users
+medication_id uuid FK→medications
+scheduled_at  timestamptz
+taken_at      timestamptz nullable
+status        text default 'pending' -- 'pending' | 'taken' | 'missed' | 'skipped'
+source        text default 'web'     -- 'web' | 'telegram'
+created_at    timestamptz
 
-Please help me transform this boilerplate into my actual application. **You MUST completely replace all existing boilerplate code** to match my project requirements. The current implementation is just temporary scaffolding that should be entirely removed and replaced.
+-- chat_messages
+id            uuid PK
+user_id       uuid FK→users
+role          text                   -- 'user' | 'assistant'
+content       text
+source        text default 'web'     -- 'web' | 'telegram' | 'voice'
+created_at    timestamptz
+```
 
-## Final Reminder: COMPLETE REPLACEMENT REQUIRED
+No symptom_logs, no vital_signs tables for MVP. Add them when needed — the schema is easy to extend.
 
-🚨 **IMPORTANT**: Do not preserve any of the existing boilerplate UI, components, or content. The user expects a completely fresh application that implements their requirements from scratch. Any remnants of the original boilerplate (like setup checklists, welcome screens, demo content, or placeholder navigation) indicate incomplete implementation.
+## Implementation Order
 
-**Success Criteria**: The final application should look and function as if it was built from scratch for the specific use case, with no evidence of the original boilerplate template.
+Build in this exact sequence. Each step should be working before moving to the next.
 
-## Post-Implementation Documentation
+### 1. Auth + Onboarding
+- Supabase auth with magic link (email for dev, phone for production)
+- Simple onboarding: name, role selection (patient/caretaker)
+- If caretaker: enter invite code to link to patient
+- If patient: generate invite code to share with caretaker
 
-After completing the implementation, you MUST document any new features or significant changes in the `/docs/features/` directory:
+### 2. Medication Entry
+- **Manual add**: simple form — name, dosage, timing checkboxes (morning/afternoon/evening/bedtime)
+- **Scan add**: camera capture → send image to OpenRouter vision model → prompt: "Extract all medication names, dosages, and frequencies from this prescription. Return JSON array: [{name, dosage, frequency}]" → show results for user to confirm/edit/save
+- After save: call OpenRouter to generate plain-language `purpose` field ("This medication helps control your blood sugar levels. Take it with food.")
+- After save: check interactions against all other active meds via OpenFDA API. Store any findings in interactions table. Show warning banner if found.
 
-1. **Create Feature Documentation**: For each major feature implemented, create a markdown file in `/docs/features/` that explains:
+### 3. Medication List + Home Screen
+- Home screen: today's medication timeline grouped by time slot
+- Each med shown as a card: 💊 name + dosage + time + big "✅ Take" button
+- Medication list page: all active meds with purpose, warnings badge if interactions exist
+- Tap medication → detail view with full explanation + interaction warnings
 
-   - What the feature does
-   - How it works
-   - Key components and files involved
-   - Usage examples
-   - Any configuration or setup required
+### 4. Reminders + Adherence
+- Auto-generate reminders from medication timing when meds are added
+- Default times: morning=08:00, afternoon=12:30, evening=18:00, bedtime=21:30 (user can adjust)
+- Create daily adherence_log entries each morning via cron or on-demand
+- Confirmation: tap ✅ on home screen → mark as taken, log timestamp
+- End of day: any unconfirmed doses auto-marked as 'missed'
+- Caretaker alert: if dose not confirmed 60 min after scheduled time, show on caretaker view
 
-2. **Update Existing Documentation**: If you modify existing functionality, update the relevant documentation files to reflect the changes.
+### 5. Telegram Bot
+- grammy.js webhook at `/api/telegram/webhook`
+- `/start` → link Telegram account to web account via one-time code
+- `/meds` → list today's medications and status
+- Reminder messages sent at scheduled times:
+  ```
+  💊 吃藥時間到了！(Time for medication!)
+  
+  🕐 早餐後 (After Breakfast)
+  • Metformin 500mg
+  • Lisinopril 10mg
+  
+  [✅ 已服用] [⏰ 稍後提醒] [❌ 跳過]
+  ```
+- Inline button callbacks → update adherence_logs
+- Free text messages → forward to AI chat (same as web chat)
 
-3. **Document Design Decisions**: Include any important architectural or design decisions made during implementation.
+### 6. AI Chat Companion
+- Chat page with WhatsApp-style bubbles
+- Text input + large 🎤 microphone button
+- Voice input: Web Speech API with `lang='zh-TW'`
+- Voice output: toggle to read responses aloud via SpeechSynthesis
+- Send to OpenRouter with user context (medication list + recent adherence)
+- Stream response back
+- Store messages in chat_messages table
+- Same endpoint serves both web and Telegram chat
 
-This documentation helps maintain the project and assists future developers working with the codebase.
+### 7. Caretaker View
+- Simple page (not a full dashboard): shows linked patient's info
+- Today's medication schedule with taken/pending/missed status
+- 7-day adherence percentage (simple calculation from adherence_logs)
+- List of recent missed doses
+- That's it. No charts, no analytics for MVP.
+
+### 8. i18n + UX Polish
+- next-intl with zh-TW and en
+- All UI strings externalized
+- Verify elderly UX: min 18px text, min 48px touch targets, high contrast
+- Bottom tab nav: 🏠 Home | 💊 Meds | 💬 Chat | 👤 Profile
+- Test on actual phone screen sizes
+
+## AI Chat System Prompt
+
+```
+You are MedBuddy (醫伴), a warm medication companion for elderly users.
+
+The user's current medications:
+{medications_json}
+
+Recent adherence (last 7 days):
+{adherence_summary}
+
+Rules:
+- NEVER diagnose conditions or recommend changing/stopping medications
+- ALWAYS say "please ask your doctor" for medical decisions
+- You CAN explain what medications do in simple terms
+- You CAN flag known drug interactions
+- You CAN help with reminders and schedules
+- You CAN answer general wellness questions
+- Respond in {user_locale}
+- Use short, simple sentences. No medical jargon.
+- Be warm and encouraging, like a caring family member.
+```
+
+## API Routes
+```
+POST /api/medications         — add medication(s)
+POST /api/medications/scan    — vision model parse prescription image
+GET  /api/medications         — list user's active medications
+DELETE /api/medications/[id]  — deactivate medication
+GET  /api/interactions        — get interaction warnings for user
+POST /api/adherence           — log dose taken/skipped
+GET  /api/adherence/today     — today's schedule with status
+POST /api/chat                — AI chat (streaming)
+GET  /api/caretaker/patient   — get linked patient's data
+POST /api/telegram/webhook    — Telegram bot
+```
+
+## Environment Variables
+```
+Already have been set in .env
+```
+
+## OpenRouter Setup
+All LLM calls go through a single `lib/ai.ts` wrapper:
+```typescript
+import OpenAI from 'openai';
+
+export const ai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY,
+  defaultHeaders: {
+    'HTTP-Referer': process.env.NEXT_PUBLIC_APP_URL,
+    'X-Title': 'MedBuddy',
+  },
+});
+
+// Usage: ai.chat.completions.create({ model: process.env.OPENROUTER_MODEL, ... })
+```
+Swap models by changing the env var. Zero code changes.
+
+## File Structure (keep it flat)
+```
+src/
+├── app/
+│   ├── [locale]/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx              (landing/auth)
+│   │   ├── home/page.tsx         (today's meds timeline)
+│   │   ├── medications/
+│   │   │   ├── page.tsx          (list)
+│   │   │   ├── add/page.tsx      (manual add)
+│   │   │   └── scan/page.tsx     (camera scan)
+│   │   ├── chat/page.tsx         (AI companion)
+│   │   ├── profile/page.tsx
+│   │   └── caretaker/page.tsx    (linked patient view)
+│   └── api/
+│       ├── medications/
+│       ├── adherence/
+│       ├── chat/
+│       ├── caretaker/
+│       └── telegram/
+├── components/
+│   ├── ui/                       (shadcn)
+│   ├── med-card.tsx
+│   ├── chat-bubble.tsx
+│   ├── voice-button.tsx
+│   └── bottom-nav.tsx
+├── db/
+│   └── schema.ts
+├── lib/
+│   ├── ai.ts                     (OpenRouter wrapper)
+│   ├── drugs.ts                  (OpenFDA interaction check)
+│   └── telegram.ts               (grammy bot)
+├── i18n/
+│   ├── zh-TW.json
+│   └── en.json
+└── types/
+    └── index.ts
+```
+
+## What's NOT in MVP (future backlog)
+- Doctor visit summary reports
+- Vital signs / blood pressure tracking
+- IoT device integration
+- Nutrition tracking
+- Symptom logging
+- LINE integration (Telegram proves the pattern)
+- Japanese / Korean locales
+- B2B hospital dashboard
+- Ad monetization
+- Premium/paid features
+
+## Design Principles
+- If grandma can't use it in 5 seconds, it's wrong
+- One action per screen
+- Voice is a first-class input, not an afterthought
+- Companion, never doctor — hard guardrail
+- Scalable architecture, MVP features

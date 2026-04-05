@@ -1,0 +1,1 @@
+ALTER TABLE "caretaker_link" ALTER COLUMN "patient_id" DROP NOT NULL;

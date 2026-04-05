@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 /**
- * Interactive setup wizard for the Agentic Coding Starter Kit.
+ * Interactive setup wizard for MedBuddy.
  * Run with: npx tsx scripts/setup.ts
  */
 
@@ -179,7 +179,7 @@ async function runDatabaseMigration(): Promise<boolean> {
   log("\nRunning database migration...", "cyan");
 
   try {
-    execSync("pnpm db:migrate", {
+    execSync("npm run db:migrate", {
       cwd: ROOT_DIR,
       stdio: "inherit",
     });
@@ -209,7 +209,7 @@ function printNextSteps(envStatus: EnvStatus) {
     steps.push("Get an OpenRouter API key at https://openrouter.ai/settings/keys");
   }
 
-  steps.push("Start the development server: pnpm dev");
+  steps.push("Start the development server: npm run dev");
   steps.push("Open http://localhost:3000 in your browser");
 
   steps.forEach((step, index) => {
@@ -225,7 +225,7 @@ function printNextSteps(envStatus: EnvStatus) {
 }
 
 async function main() {
-  header("Agentic Coding Starter Kit - Setup Wizard");
+  header("MedBuddy - Setup Wizard");
 
   // Step 1: Check Node version
   log("Checking Node.js version...", "cyan");

@@ -1,0 +1,428 @@
+{
+  "common": {
+    "appName": "MedBuddy",
+    "loading": "Loading...",
+    "save": "Save",
+    "saving": "Saving...",
+    "retry": "Try Again",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "error": "Something went wrong. Please try again.",
+    "success": "Success"
+  },
+  "nav": {
+    "home": "Home",
+    "medications": "Meds",
+    "chat": "Chat",
+    "profile": "Profile",
+    "patient": "Patient"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset Password",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "createAccount": "Create Account",
+    "profile": "Your Profile",
+    "continueWithGoogle": "Continue with Google",
+    "orContinueWith": "or"
+  },
+  "landing": {
+    "hero": {
+      "title": "Your Caring Medication Companion",
+      "subtitle": "Scan prescriptions, set reminders, confirm doses — managing medications made simple and worry-free",
+      "cta": "Get Started",
+      "secondaryCta": "Learn More"
+    },
+    "features": {
+      "scan": {
+        "title": "Prescription Scanning",
+        "description": "Snap a photo to identify medications — AI organizes your info automatically"
+      },
+      "reminders": {
+        "title": "Dose Reminders",
+        "description": "Timely reminders so you never miss a dose, with one-tap confirmation"
+      },
+      "chat": {
+        "title": "AI Medication Chat",
+        "description": "Ask medication questions anytime — voice input supported"
+      },
+      "caretaker": {
+        "title": "Caretaker Connection",
+        "description": "Family members can monitor adherence in real-time for peace of mind"
+      }
+    },
+    "auth": {
+      "signIn": "Sign In"
+    },
+    "trust": {
+      "disclaimer": "MedBuddy provides medication information for reference only and cannot replace professional medical advice. Please consult your doctor or pharmacist with any concerns."
+    }
+  },
+  "timeSlots": {
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "bedtime": "Bedtime"
+  },
+  "status": {
+    "pending": "Pending",
+    "taken": "Taken",
+    "missed": "Missed",
+    "skipped": "Skipped"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The page you're looking for doesn't exist or has been moved.",
+    "goHome": "Go home"
+  },
+  "authPages": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your account",
+      "resetSuccess": "Password reset successfully. Please sign in with your new password.",
+      "signingIn": "Signing in...",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "Your password"
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Get started with MedBuddy",
+      "namePlaceholder": "Your name",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "Create a password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "confirmPassword": "Confirm Password",
+      "creating": "Creating account...",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters"
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "subtitle": "Enter your email address and we'll send you a reset link",
+      "sending": "Sending...",
+      "sendResetLink": "Send reset link",
+      "successMessage": "If an account exists with that email, a password reset link has been sent. Check your terminal for the reset URL.",
+      "backToSignIn": "Back to sign in",
+      "rememberPassword": "Remember your password?",
+      "emailPlaceholder": "you@example.com"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "subtitle": "Enter your new password below",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPlaceholder": "Confirm new password",
+      "resetting": "Resetting...",
+      "resetButton": "Reset password",
+      "invalidToken": "This password reset link is invalid or has expired.",
+      "noToken": "No reset token provided.",
+      "requestNewLink": "Request a new link"
+    },
+    "errors": {
+      "signInFailed": "Failed to sign in",
+      "signUpFailed": "Failed to create account",
+      "resetFailed": "Failed to reset password",
+      "unexpected": "An unexpected error occurred"
+    }
+  },
+  "onboarding": {
+    "welcome": "Welcome to MedBuddy!",
+    "letsSetUp": "Let's set up your account",
+    "step": "Step {current} of {total}",
+    "nameStep": {
+      "title": "Confirm your name",
+      "subtitle": "This is how you'll appear in MedBuddy",
+      "nameLabel": "Name"
+    },
+    "roleStep": {
+      "title": "What's your role?",
+      "subtitle": "Choose how you'll use MedBuddy",
+      "patient": "I'm a Patient",
+      "patientDesc": "Manage my medications and get reminders",
+      "caretaker": "I'm a Caretaker",
+      "caretakerDesc": "Help a family member manage medications"
+    },
+    "inviteStep": {
+      "patientTitle": "Your Invite Code",
+      "patientSubtitle": "Share this code with your caretaker to link accounts",
+      "copied": "Copied!",
+      "copyCode": "Copy invite code",
+      "caretakerTitle": "Enter Invite Code",
+      "caretakerSubtitle": "Enter the 6-character code from your patient",
+      "codePlaceholder": "Enter 6-character code",
+      "linking": "Linking...",
+      "linkAccount": "Link Account",
+      "linkSuccess": "Successfully linked!",
+      "skipForNow": "Skip for now",
+      "noCodePrompt": "Don't have a code?",
+      "inviteInstead": "Invite a patient instead"
+    },
+    "complete": "Get Started",
+    "completing": "Setting up..."
+  },
+  "home": {
+    "title": "Today's Medications",
+    "greeting": {
+      "morning": "Good Morning",
+      "afternoon": "Good Afternoon",
+      "evening": "Good Evening"
+    },
+    "noMedications": "No medications scheduled",
+    "noMedicationsHint": "Add medications to see your daily schedule",
+    "addMedication": "Add Medication",
+    "scanPrescription": "Scan Prescription",
+    "take": "Take",
+    "taken": "Taken",
+    "missed": "Missed",
+    "doseLogged": "Dose logged!",
+    "timeSlotHeader": "{slot} · {time}"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "unexpectedError": "An unexpected error occurred. Please try again or contact support if the problem persists.",
+    "errorId": "Error ID: {id}",
+    "tryAgain": "Try again",
+    "goHome": "Go home"
+  },
+  "profile": {
+    "title": "Profile",
+    "userInfo": "Account Information",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "roles": {
+      "patient": "Patient",
+      "caretaker": "Caretaker"
+    },
+    "reminderTimes": "Reminder Times",
+    "remindersSaved": "Reminder times saved",
+    "appearance": "Appearance",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "language": "Language",
+    "localeSaved": "Language updated",
+    "switchLanguage": "切換至中文",
+    "notifications": "Notifications",
+    "signOut": "Sign Out",
+    "telegram": {
+      "title": "Telegram",
+      "linked": "Linked",
+      "notLinked": "Not linked",
+      "link": "Link Telegram",
+      "unlink": "Unlink",
+      "unlinkConfirm": "Are you sure you want to unlink your Telegram account?",
+      "unlinkSuccess": "Telegram account unlinked",
+      "codeTitle": "Your Linking Code",
+      "codeInstructions": "Open the MedBuddy bot on Telegram and send:",
+      "openBot": "Open @medbuddy_tw_bot",
+      "codeCopied": "Code copied!",
+      "codeExpires": "Code expires in 10 minutes"
+    },
+    "caregiver": {
+      "title": "Caregiver Invite",
+      "description": "Share this code with your caregiver so they can link to your account.",
+      "code": "Invite Code",
+      "claimed": "A caregiver has linked using this code.",
+      "noCode": "No invite code yet.",
+      "generate": "Generate Invite Code",
+      "regenerate": "Generate New Code",
+      "copied": "Invite code copied!",
+      "copyCode": "Copy code"
+    },
+    "line": {
+      "title": "LINE",
+      "notLinked": "Not linked",
+      "comingSoon": "Coming Soon"
+    }
+  },
+  "medications": {
+    "title": "My Medications",
+    "addMedication": "Add Medication",
+    "scanPrescription": "Scan Prescription",
+    "noMedications": "No medications added yet",
+    "noMedicationsHint": "Add your first medication or scan a prescription",
+    "fetchError": "Failed to load medications",
+    "addError": "Failed to add medication",
+    "add": {
+      "title": "Add Medication",
+      "name": "Medication Name",
+      "namePlaceholder": "e.g. Metformin",
+      "nameLocal": "Chinese Name",
+      "nameLocalPlaceholder": "e.g. 降血糖藥",
+      "dosage": "Dosage",
+      "dosagePlaceholder": "e.g. 500mg twice daily",
+      "timing": "When do you take it?",
+      "submit": "Add Medication",
+      "submitting": "Adding...",
+      "success": "Medication added successfully",
+      "purpose": "What this medication does",
+      "backToList": "Back to Medications",
+      "addAnother": "Add Another",
+      "nameRequired": "Medication name is required",
+      "timingRequired": "Please select at least one timing"
+    },
+    "scan": {
+      "title": "Scan Prescription",
+      "takePhoto": "Take Photo",
+      "choosePhoto": "Choose from Gallery",
+      "analyzing": "Analyzing prescription...",
+      "noMedsFound": "No medications found in this image",
+      "foundMeds": "{count} medication(s) found",
+      "editBeforeSave": "Review and edit before saving",
+      "saveAll": "Save All Medications",
+      "saving": "Saving...",
+      "saved": "All medications saved",
+      "partialSave": "Saved {saved} of {total} medications",
+      "retry": "Try Again",
+      "remove": "Remove",
+      "invalidFileType": "Please select an image file",
+      "fileTooLarge": "Image must be under 10MB",
+      "scanFailed": "Failed to scan prescription",
+      "frequencyPlaceholder": "e.g. twice daily"
+    },
+    "detail": {
+      "title": "Medication Details",
+      "purpose": "Purpose",
+      "dosage": "Dosage",
+      "timing": "Schedule",
+      "schedule": "Schedule",
+      "interactions": "Interactions",
+      "noInteractions": "No known interactions",
+      "deactivate": "Deactivate Medication",
+      "active": "Active",
+      "inactive": "Inactive",
+      "notFound": "Medication not found",
+      "fetchError": "Failed to load medication details",
+      "updateError": "Failed to update medication",
+      "updateSuccess": "Medication updated successfully",
+      "deactivateError": "Failed to deactivate medication",
+      "deactivateSuccess": "Medication deactivated",
+      "deactivateConfirmTitle": "Deactivate Medication?",
+      "deactivateConfirmDescription": "This medication will be removed from your active list and daily schedule. You can reactivate it later.",
+      "deactivating": "Deactivating...",
+      "backToList": "Back to Medications",
+      "recentHistory": "Recent History (7 days)",
+      "noHistory": "No dose records yet",
+      "statusTaken": "Taken",
+      "statusMissed": "Missed",
+      "statusSkipped": "Skipped",
+      "statusPending": "Pending",
+      "severity": {
+        "high": "High Risk",
+        "medium": "Moderate Risk",
+        "low": "Low Risk"
+      }
+    },
+    "interactions": {
+      "title": "Drug Interactions",
+      "warning": "Interaction Warning",
+      "high": "High Risk",
+      "medium": "Moderate Risk",
+      "low": "Low Risk",
+      "found": "{count} interaction(s) found",
+      "disclaimer": "Always consult your doctor or pharmacist about drug interactions"
+    },
+    "frequency": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "bedtime": "Bedtime"
+    }
+  },
+  "chat": {
+    "title": "MedBuddy Chat",
+    "placeholder": "Ask about your medications...",
+    "send": "Send",
+    "voiceInput": "Voice Input",
+    "voiceListening": "Listening...",
+    "voiceNotSupported": "Voice input not supported on this browser",
+    "autoRead": "Auto-read replies",
+    "readAloud": "Read aloud",
+    "stopReading": "Stop reading",
+    "loadingHistory": "Loading messages...",
+    "emptyState": "Ask me anything about your medications!",
+    "emptyHint": "I can explain what your medicines do, help with schedules, and answer health questions.",
+    "disclaimer": "MedBuddy cannot replace your doctor. For medical decisions, please consult your physician.",
+    "newChat": "New Chat",
+    "errorSending": "Failed to send message. Please try again.",
+    "attachPhoto": "Attach photo",
+    "removePhoto": "Remove photo",
+    "invalidFileType": "Please select an image file",
+    "fileTooLarge": "Image must be under 10MB"
+  },
+  "caretaker": {
+    "title": "Patient Monitor",
+    "monitoring": "Monitoring: {name}",
+    "todaySchedule": "Today's Schedule",
+    "weeklyAdherence": "7-Day Adherence",
+    "recentMissed": "Recent Missed Doses",
+    "noPatient": "No patient linked yet",
+    "noPatientHint": "Complete onboarding to link with a patient",
+    "invitePatient": "Invite a Patient",
+    "invitePatientDesc": "Generate a link to share with your family member",
+    "inviteLink": "Share this link",
+    "copyLink": "Copy link",
+    "linkCopied": "Copied!",
+    "shareLink": "Share",
+    "orManualCode": "Or share this code",
+    "invitePending": "Waiting for patient to join",
+    "adherenceRate": "{percentage}% adherence",
+    "takenCount": "{taken} of {total} doses taken",
+    "noMissedDoses": "No missed doses — great job!",
+    "noSchedule": "No medications scheduled today",
+    "loadError": "Failed to load patient data",
+    "history": {
+      "title": "Medication History",
+      "viewHistory": "View History",
+      "today": "Today",
+      "daySummary": "{taken} of {total} taken",
+      "noLogs": "No medication records for this day",
+      "back": "Back"
+    }
+  },
+  "invite": {
+    "title": "Join MedBuddy",
+    "subtitle": "{name} invited you to manage medications together",
+    "signUp": "Create Account",
+    "invalid": "This invite link is invalid or has been used",
+    "goToSignup": "Go to signup"
+  },
+  "healthSummary": {
+    "title": "Health Summary Report",
+    "generate": "Generate Health Summary",
+    "generating": "Generating...",
+    "period": "{days}-Day Medication Record",
+    "medications": "Current Medications",
+    "adherence": "Medication Adherence",
+    "interactions": "Drug Interactions",
+    "noInteractions": "No drug interactions found",
+    "narrative": "AI Summary",
+    "disclaimer": "This summary is auto-generated and is not a medical record. Please discuss with your doctor.",
+    "print": "Print",
+    "periodSelect": "Report Period",
+    "days7": "7 Days",
+    "days14": "14 Days",
+    "days30": "30 Days",
+    "taken": "Taken",
+    "missed": "Missed",
+    "overallRate": "Overall Rate",
+    "perMedRate": "Adherence",
+    "noMedications": "No active medications",
+    "purpose": "Purpose",
+    "timing": "Schedule",
+    "error": "Failed to generate summary. Please try again.",
+    "of": "of"
+  }
+}

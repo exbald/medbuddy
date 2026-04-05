@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Link, useRouter } from "@/i18n/routing"
 import { resetPassword } from "@/lib/auth-client"
 
 export function ResetPasswordForm() {
@@ -13,6 +14,9 @@ export function ResetPasswordForm() {
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
   const error = searchParams.get("error")
+  const t = useTranslations("authPages.resetPassword")
+  const tRegister = useTranslations("authPages.register")
+  const tErrors = useTranslations("authPages.errors")
 
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -24,12 +28,12 @@ export function ResetPasswordForm() {
       <div className="space-y-4 w-full max-w-sm text-center">
         <p className="text-sm text-destructive">
           {error === "invalid_token"
-            ? "This password reset link is invalid or has expired."
-            : "No reset token provided."}
+            ? t("invalidToken")
+            : t("noToken")}
         </p>
         <Link href="/forgot-password">
           <Button variant="outline" className="w-full">
-            Request a new link
+            {t("requestNewLink")}
           </Button>
         </Link>
       </div>
@@ -41,12 +45,12 @@ export function ResetPasswordForm() {
     setFormError("")
 
     if (password !== confirmPassword) {
-      setFormError("Passwords do not match")
+      setFormError(tRegister("passwordMismatch"))
       return
     }
 
     if (password.length < 8) {
-      setFormError("Password must be at least 8 characters")
+      setFormError(tRegister("passwordTooShort"))
       return
     }
 
@@ -59,12 +63,12 @@ export function ResetPasswordForm() {
       })
 
       if (result.error) {
-        setFormError(result.error.message || "Failed to reset password")
+        setFormError(result.error.message || tErrors("resetFailed"))
       } else {
         router.push("/login?reset=success")
       }
     } catch {
-      setFormError("An unexpected error occurred")
+      setFormError(tErrors("unexpected"))
     } finally {
       setIsPending(false)
     }
@@ -73,34 +77,36 @@ export function ResetPasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-sm">
       <div className="space-y-2">
-        <Label htmlFor="password">New Password</Label>
+        <Label htmlFor="password">{t("newPassword")}</Label>
         <Input
           id="password"
           type="password"
-          placeholder="Enter new password"
+          placeholder={t("newPasswordPlaceholder")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           disabled={isPending}
+          className="min-h-12 text-base"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm New Password</Label>
+        <Label htmlFor="confirmPassword">{tRegister("confirmPassword")}</Label>
         <Input
           id="confirmPassword"
           type="password"
-          placeholder="Confirm new password"
+          placeholder={t("confirmPlaceholder")}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
           disabled={isPending}
+          className="min-h-12 text-base"
         />
       </div>
       {formError && (
         <p className="text-sm text-destructive">{formError}</p>
       )}
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "Resetting..." : "Reset password"}
+      <Button type="submit" className="min-h-12 w-full" disabled={isPending}>
+        {isPending ? t("resetting") : t("resetButton")}
       </Button>
     </form>
   )

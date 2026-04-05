@@ -1,0 +1,428 @@
+{
+  "common": {
+    "appName": "MedBuddy 藥好友",
+    "loading": "載入中...",
+    "save": "儲存",
+    "saving": "儲存中...",
+    "retry": "重試",
+    "cancel": "取消",
+    "confirm": "確認",
+    "delete": "刪除",
+    "edit": "編輯",
+    "back": "返回",
+    "next": "下一步",
+    "error": "發生錯誤，請重試",
+    "success": "操作成功"
+  },
+  "nav": {
+    "home": "首頁",
+    "medications": "藥物",
+    "chat": "聊天",
+    "profile": "我的",
+    "patient": "病患"
+  },
+  "auth": {
+    "signIn": "登入",
+    "signUp": "註冊",
+    "signOut": "登出",
+    "email": "電子信箱",
+    "password": "密碼",
+    "name": "姓名",
+    "forgotPassword": "忘記密碼？",
+    "resetPassword": "重設密碼",
+    "noAccount": "還沒有帳號？",
+    "hasAccount": "已經有帳號？",
+    "createAccount": "建立帳號",
+    "profile": "個人資料",
+    "continueWithGoogle": "使用 Google 登入",
+    "orContinueWith": "或"
+  },
+  "landing": {
+    "hero": {
+      "title": "您的貼心用藥好夥伴",
+      "subtitle": "掃描處方箋、設定提醒、確認服藥，讓管理藥物變得簡單又安心",
+      "cta": "立即開始",
+      "secondaryCta": "了解更多"
+    },
+    "features": {
+      "scan": {
+        "title": "處方箋掃描",
+        "description": "拍照即可辨識藥物，AI 自動整理用藥資訊"
+      },
+      "reminders": {
+        "title": "服藥提醒",
+        "description": "準時提醒不漏吃，一鍵確認已服藥"
+      },
+      "chat": {
+        "title": "AI 藥物問答",
+        "description": "隨時詢問用藥問題，語音也能聊"
+      },
+      "caretaker": {
+        "title": "照護者連結",
+        "description": "家人即時掌握服藥狀況，安心又放心"
+      }
+    },
+    "auth": {
+      "signIn": "登入"
+    },
+    "trust": {
+      "disclaimer": "MedBuddy 僅提供用藥資訊參考，不能取代醫師診斷。如有疑問，請諮詢您的醫師或藥師。"
+    }
+  },
+  "timeSlots": {
+    "morning": "早上",
+    "afternoon": "中午",
+    "evening": "晚上",
+    "bedtime": "睡前"
+  },
+  "status": {
+    "pending": "待服藥",
+    "taken": "已服藥",
+    "missed": "未服藥",
+    "skipped": "跳過"
+  },
+  "notFound": {
+    "title": "找不到頁面",
+    "description": "您要找的頁面不存在或已移動。",
+    "goHome": "回首頁"
+  },
+  "authPages": {
+    "login": {
+      "title": "歡迎回來",
+      "subtitle": "登入您的帳號",
+      "resetSuccess": "密碼重設成功，請使用新密碼登入。",
+      "signingIn": "登入中...",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "您的密碼"
+    },
+    "register": {
+      "title": "建立帳號",
+      "subtitle": "開始使用 MedBuddy",
+      "namePlaceholder": "您的姓名",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "設定密碼",
+      "confirmPasswordPlaceholder": "再次輸入密碼",
+      "confirmPassword": "確認密碼",
+      "creating": "建立中...",
+      "passwordMismatch": "密碼不一致",
+      "passwordTooShort": "密碼需至少 8 個字元"
+    },
+    "forgotPassword": {
+      "title": "忘記密碼",
+      "subtitle": "輸入您的電子信箱，我們會寄送重設連結",
+      "sending": "寄送中...",
+      "sendResetLink": "寄送重設連結",
+      "successMessage": "如果該信箱有註冊帳號，我們已寄出重設連結。請查看終端機的重設網址。",
+      "backToSignIn": "返回登入",
+      "rememberPassword": "記得密碼？",
+      "emailPlaceholder": "you@example.com"
+    },
+    "resetPassword": {
+      "title": "重設密碼",
+      "subtitle": "請輸入您的新密碼",
+      "newPassword": "新密碼",
+      "newPasswordPlaceholder": "輸入新密碼",
+      "confirmPlaceholder": "再次輸入新密碼",
+      "resetting": "重設中...",
+      "resetButton": "重設密碼",
+      "invalidToken": "此密碼重設連結無效或已過期。",
+      "noToken": "未提供重設令牌。",
+      "requestNewLink": "申請新的連結"
+    },
+    "errors": {
+      "signInFailed": "登入失敗",
+      "signUpFailed": "建立帳號失敗",
+      "resetFailed": "重設密碼失敗",
+      "unexpected": "發生意外錯誤"
+    }
+  },
+  "onboarding": {
+    "welcome": "歡迎使用 MedBuddy！",
+    "letsSetUp": "讓我們幫您設定帳號",
+    "step": "步驟 {current} / {total}",
+    "nameStep": {
+      "title": "確認您的姓名",
+      "subtitle": "這是您在 MedBuddy 中顯示的名稱",
+      "nameLabel": "姓名"
+    },
+    "roleStep": {
+      "title": "您的身份是？",
+      "subtitle": "請選擇您的角色",
+      "patient": "我是病患",
+      "patientDesc": "管理我的藥物、接收提醒",
+      "caretaker": "我是照護者",
+      "caretakerDesc": "幫助家人管理藥物"
+    },
+    "inviteStep": {
+      "patientTitle": "您的邀請碼",
+      "patientSubtitle": "將此邀請碼分享給您的照護者，即可連結帳號",
+      "copied": "已複製！",
+      "copyCode": "複製邀請碼",
+      "caretakerTitle": "輸入邀請碼",
+      "caretakerSubtitle": "請輸入病患提供的 6 位數邀請碼",
+      "codePlaceholder": "輸入 6 位數邀請碼",
+      "linking": "連結中...",
+      "linkAccount": "連結帳號",
+      "linkSuccess": "成功連結！",
+      "skipForNow": "稍後再說",
+      "noCodePrompt": "沒有邀請碼？",
+      "inviteInstead": "改為邀請病患"
+    },
+    "complete": "開始使用",
+    "completing": "設定中..."
+  },
+  "home": {
+    "title": "今日藥物",
+    "greeting": {
+      "morning": "早安",
+      "afternoon": "午安",
+      "evening": "晚安"
+    },
+    "noMedications": "今天沒有要吃的藥",
+    "noMedicationsHint": "新增藥物以查看每日用藥時間表",
+    "addMedication": "新增藥物",
+    "scanPrescription": "掃描處方箋",
+    "take": "吃藥",
+    "taken": "已服藥",
+    "missed": "未服藥",
+    "doseLogged": "已記錄服藥！",
+    "timeSlotHeader": "{slot} · {time}"
+  },
+  "errors": {
+    "somethingWentWrong": "出了一些問題",
+    "unexpectedError": "發生了意外錯誤，請重試或聯繫客服。",
+    "errorId": "錯誤代碼：{id}",
+    "tryAgain": "重試",
+    "goHome": "回首頁"
+  },
+  "profile": {
+    "title": "個人資料",
+    "userInfo": "帳號資訊",
+    "name": "姓名",
+    "email": "電子信箱",
+    "role": "角色",
+    "roles": {
+      "patient": "病患",
+      "caretaker": "照護者"
+    },
+    "reminderTimes": "提醒時間",
+    "remindersSaved": "提醒時間已儲存",
+    "appearance": "外觀",
+    "themeLight": "淺色",
+    "themeDark": "深色",
+    "themeSystem": "跟隨系統",
+    "language": "語言",
+    "localeSaved": "語言已更新",
+    "switchLanguage": "Switch to English",
+    "notifications": "通知設定",
+    "signOut": "登出",
+    "telegram": {
+      "title": "Telegram",
+      "linked": "已連結",
+      "notLinked": "尚未連結",
+      "link": "連結 Telegram",
+      "unlink": "取消連結",
+      "unlinkConfirm": "確定要取消連結 Telegram 帳號嗎？",
+      "unlinkSuccess": "已取消 Telegram 連結",
+      "codeTitle": "您的連結碼",
+      "codeInstructions": "請在 Telegram 開啟 MedBuddy 機器人並傳送：",
+      "openBot": "開啟 @medbuddy_tw_bot",
+      "codeCopied": "已複製連結碼！",
+      "codeExpires": "連結碼將在 10 分鐘後過期"
+    },
+    "caregiver": {
+      "title": "照護者邀請",
+      "description": "將此邀請碼分享給您的照護者，讓他們連結您的帳號。",
+      "code": "邀請碼",
+      "claimed": "照護者已使用此邀請碼連結。",
+      "noCode": "尚未產生邀請碼。",
+      "generate": "產生邀請碼",
+      "regenerate": "產生新邀請碼",
+      "copied": "已複製邀請碼！",
+      "copyCode": "複製邀請碼"
+    },
+    "line": {
+      "title": "LINE",
+      "notLinked": "尚未連結",
+      "comingSoon": "即將推出"
+    }
+  },
+  "medications": {
+    "title": "我的藥物",
+    "addMedication": "新增藥物",
+    "scanPrescription": "掃描處方箋",
+    "noMedications": "尚未新增任何藥物",
+    "noMedicationsHint": "新增您的第一個藥物或掃描處方箋",
+    "fetchError": "藥物載入失敗",
+    "addError": "新增藥物失敗",
+    "add": {
+      "title": "新增藥物",
+      "name": "藥物名稱",
+      "namePlaceholder": "例如：Metformin",
+      "nameLocal": "中文名稱",
+      "nameLocalPlaceholder": "例如：降血糖藥",
+      "dosage": "劑量",
+      "dosagePlaceholder": "例如：每日兩次 500mg",
+      "timing": "服藥時間",
+      "submit": "新增藥物",
+      "submitting": "新增中...",
+      "success": "藥物新增成功",
+      "purpose": "這個藥物的作用",
+      "backToList": "返回藥物列表",
+      "addAnother": "再新增一個",
+      "nameRequired": "請輸入藥物名稱",
+      "timingRequired": "請選擇至少一個服藥時間"
+    },
+    "scan": {
+      "title": "掃描處方箋",
+      "takePhoto": "拍照",
+      "choosePhoto": "從相簿選取",
+      "analyzing": "分析處方箋中...",
+      "noMedsFound": "未在圖片中找到藥物",
+      "foundMeds": "找到 {count} 種藥物",
+      "editBeforeSave": "儲存前請確認與編輯",
+      "saveAll": "儲存所有藥物",
+      "saving": "儲存中...",
+      "saved": "所有藥物已儲存",
+      "partialSave": "已儲存 {saved} / {total} 種藥物",
+      "retry": "重試",
+      "remove": "移除",
+      "invalidFileType": "請選擇圖片檔案",
+      "fileTooLarge": "圖片大小不可超過 10MB",
+      "scanFailed": "掃描處方箋失敗",
+      "frequencyPlaceholder": "例如：每日兩次"
+    },
+    "detail": {
+      "title": "藥物詳情",
+      "purpose": "用途",
+      "dosage": "劑量",
+      "timing": "服藥時間",
+      "schedule": "服藥時間",
+      "interactions": "交互作用",
+      "noInteractions": "無已知交互作用",
+      "deactivate": "停用藥物",
+      "active": "使用中",
+      "inactive": "已停用",
+      "notFound": "找不到此藥物",
+      "fetchError": "藥物詳情載入失敗",
+      "updateError": "藥物更新失敗",
+      "updateSuccess": "藥物已更新",
+      "deactivateError": "停用藥物失敗",
+      "deactivateSuccess": "藥物已停用",
+      "deactivateConfirmTitle": "確定要停用藥物？",
+      "deactivateConfirmDescription": "此藥物將從您的使用中列表及每日服藥時間表中移除。您可以稍後重新啟用。",
+      "deactivating": "停用中...",
+      "backToList": "返回藥物列表",
+      "recentHistory": "近期紀錄（7天）",
+      "noHistory": "尚無服藥紀錄",
+      "statusTaken": "已服藥",
+      "statusMissed": "未服藥",
+      "statusSkipped": "已跳過",
+      "statusPending": "待服藥",
+      "severity": {
+        "high": "高風險",
+        "medium": "中等風險",
+        "low": "低風險"
+      }
+    },
+    "interactions": {
+      "title": "藥物交互作用",
+      "warning": "交互作用警告",
+      "high": "高風險",
+      "medium": "中等風險",
+      "low": "低風險",
+      "found": "發現 {count} 項交互作用",
+      "disclaimer": "藥物交互作用請務必諮詢您的醫師或藥師"
+    },
+    "frequency": {
+      "morning": "早上",
+      "afternoon": "中午",
+      "evening": "晚上",
+      "bedtime": "睡前"
+    }
+  },
+  "chat": {
+    "title": "醫伴聊天",
+    "placeholder": "詢問您的藥物問題...",
+    "send": "送出",
+    "voiceInput": "語音輸入",
+    "voiceListening": "聆聽中...",
+    "voiceNotSupported": "此瀏覽器不支援語音輸入",
+    "autoRead": "自動朗讀回覆",
+    "readAloud": "朗讀",
+    "stopReading": "停止朗讀",
+    "loadingHistory": "載入訊息中...",
+    "emptyState": "有任何藥物問題都可以問我！",
+    "emptyHint": "我可以解釋藥物的作用、協助安排服藥時間，並回答健康相關問題。",
+    "disclaimer": "醫伴不能取代醫師。用藥相關決定，請諮詢您的醫師。",
+    "newChat": "新對話",
+    "errorSending": "訊息送出失敗，請重試。",
+    "attachPhoto": "附加照片",
+    "removePhoto": "移除照片",
+    "invalidFileType": "請選擇圖片檔案",
+    "fileTooLarge": "圖片大小不能超過 10MB"
+  },
+  "caretaker": {
+    "title": "病患監護",
+    "monitoring": "監護中：{name}",
+    "todaySchedule": "今日用藥",
+    "weeklyAdherence": "七日服藥率",
+    "recentMissed": "近期漏服記錄",
+    "noPatient": "尚未連結病患",
+    "noPatientHint": "請完成設定以連結病患帳號",
+    "invitePatient": "邀請病患",
+    "invitePatientDesc": "產生連結分享給您的家人",
+    "inviteLink": "分享此連結",
+    "copyLink": "複製連結",
+    "linkCopied": "已複製！",
+    "shareLink": "分享",
+    "orManualCode": "或告知此邀請碼",
+    "invitePending": "等待病患加入",
+    "adherenceRate": "服藥率 {percentage}%",
+    "takenCount": "已服用 {taken} / {total} 劑",
+    "noMissedDoses": "沒有漏服記錄，太棒了！",
+    "noSchedule": "今日沒有排定的用藥",
+    "loadError": "載入病患資料失敗",
+    "history": {
+      "title": "服藥紀錄",
+      "viewHistory": "查看紀錄",
+      "today": "今天",
+      "daySummary": "已服用 {taken} / {total}",
+      "noLogs": "這天沒有服藥紀錄",
+      "back": "返回"
+    }
+  },
+  "invite": {
+    "title": "加入 MedBuddy",
+    "subtitle": "{name} 邀請您一起管理用藥",
+    "signUp": "建立帳號",
+    "invalid": "此邀請連結無效或已使用",
+    "goToSignup": "前往註冊"
+  },
+  "healthSummary": {
+    "title": "健康摘要報告",
+    "generate": "產生健康摘要",
+    "generating": "正在產生...",
+    "period": "{days} 天用藥紀錄",
+    "medications": "目前用藥",
+    "adherence": "服藥遵從率",
+    "interactions": "藥物交互作用",
+    "noInteractions": "未發現藥物交互作用",
+    "narrative": "AI 摘要",
+    "disclaimer": "此摘要由 AI 自動產生，非正式醫療紀錄。請與您的醫師討論。",
+    "print": "列印",
+    "periodSelect": "報告期間",
+    "days7": "7 天",
+    "days14": "14 天",
+    "days30": "30 天",
+    "taken": "已服",
+    "missed": "未服",
+    "overallRate": "整體遵從率",
+    "perMedRate": "遵從率",
+    "noMedications": "目前沒有使用中的藥物",
+    "purpose": "用途",
+    "timing": "服藥時間",
+    "error": "產生摘要失敗，請重試",
+    "of": "/"
+  }
+}

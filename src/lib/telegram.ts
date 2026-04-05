@@ -1,0 +1,419 @@
+import { generateText } from "ai"
+import { and, eq, gte, lt, lte, like } from "drizzle-orm"
+import { Bot, InlineKeyboard } from "grammy"
+import { defaultModel } from "@/lib/ai"
+import { buildSystemPrompt } from "@/lib/chat-prompt"
+import { getTimeSlot, getTaipeiToday } from "@/lib/constants"
+import { db } from "@/lib/db"
+import {
+  adherenceLog,
+  chatMessage,
+  medication,
+  user,
+  verification,
+} from "@/lib/schema"
+
+// ---------------------------------------------------------------------------
+// Bot instance (lazy-initialized, singleton across serverless invocations)
+// ---------------------------------------------------------------------------
+
+let _bot: Bot | null = null
+
+/**
+ * Returns the shared Bot instance, creating it on first call.
+ * This avoids crashing the server at module-load time when
+ * TELEGRAM_BOT_TOKEN is not configured (e.g. non-Telegram deployments).
+ */
+export function getBot(): Bot {
+  if (!_bot) {
+    const token = process.env.TELEGRAM_BOT_TOKEN
+    if (!token) {
+      throw new Error("TELEGRAM_BOT_TOKEN environment variable is not set")
+    }
+    _bot = new Bot(token)
+    registerHandlers(_bot)
+  }
+  return _bot
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Resolve a Telegram chat ID to a user row. Returns null if unlinked. */
+async function findUserByChatId(chatId: string) {
+  const [row] = await db
+    .select({
+      id: user.id,
+      name: user.name,
+      locale: user.locale,
+    })
+    .from(user)
+    .where(eq(user.telegramChatId, chatId))
+    .limit(1)
+  return row ?? null
+}
+
+/** Fetch active medications for a user. */
+async function fetchUserMeds(userId: string) {
+  return db
+    .select({
+      name: medication.name,
+      nameLocal: medication.nameLocal,
+      dosage: medication.dosage,
+      purpose: medication.purpose,
+      timing: medication.timing,
+    })
+    .from(medication)
+    .where(and(eq(medication.userId, userId), eq(medication.active, true)))
+}
+
+/** Fetch 7-day adherence summary for system prompt context. */
+async function fetchAdherenceSummary(userId: string) {
+  const sevenDaysAgo = new Date()
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+  const now = new Date()
+
+  const recentLogs = await db
+    .select({ status: adherenceLog.status })
+    .from(adherenceLog)
+    .where(
+      and(
+        eq(adherenceLog.userId, userId),
+        gte(adherenceLog.scheduledAt, sevenDaysAgo),
+        lte(adherenceLog.scheduledAt, now),
+      ),
+    )
+
+  return {
+    taken: recentLogs.filter((l) => l.status === "taken").length,
+    missed: recentLogs.filter((l) => l.status === "missed").length,
+    pending: recentLogs.filter((l) => l.status === "pending").length,
+    total: recentLogs.length,
+  }
+}
+
+/** Status to emoji mapping. */
+const STATUS_EMOJI: Record<string, string> = {
+  taken: "\u2705",
+  pending: "\u23F3",
+  missed: "\u274C",
+  skipped: "\u23ED\uFE0F",
+}
+
+// ---------------------------------------------------------------------------
+// Handler registration (called once when the bot is first created)
+// ---------------------------------------------------------------------------
+
+function registerHandlers(bot: Bot) {
+  // -------------------------------------------------------------------------
+  // /start <code> — Account linking
+  // -------------------------------------------------------------------------
+
+  bot.command("start", async (ctx) => {
+    const code = ctx.match?.trim()
+    if (!code) {
+      await ctx.reply(
+        "Welcome to MedBuddy! To link your account, open the MedBuddy app, go to Profile, tap 'Link Telegram', and send me the code with /start <code>.",
+      )
+      return
+    }
+
+    // Look up the one-time linking code in the verification table
+    const [verificationRow] = await db
+      .select({
+        id: verification.id,
+        identifier: verification.identifier,
+        expiresAt: verification.expiresAt,
+      })
+      .from(verification)
+      .where(
+        and(
+          like(verification.identifier, "telegram-link:%"),
+          eq(verification.value, code),
+        ),
+      )
+      .limit(1)
+
+    if (!verificationRow) {
+      await ctx.reply(
+        "Invalid or expired code. Please generate a new one from the MedBuddy app.",
+      )
+      return
+    }
+
+    // Check expiry
+    if (verificationRow.expiresAt < new Date()) {
+      await db
+        .delete(verification)
+        .where(eq(verification.id, verificationRow.id))
+      await ctx.reply(
+        "This code has expired. Please generate a new one from the MedBuddy app.",
+      )
+      return
+    }
+
+    // Extract userId from the identifier (format: "telegram-link:<userId>")
+    const userId = verificationRow.identifier.replace("telegram-link:", "")
+    const chatId = ctx.from?.id?.toString()
+    if (!chatId) {
+      await ctx.reply(
+        "Unable to determine your Telegram ID. Please try again.",
+      )
+      return
+    }
+
+    // Link the account
+    await db
+      .update(user)
+      .set({ telegramChatId: chatId })
+      .where(eq(user.id, userId))
+
+    // Delete the used verification code
+    await db
+      .delete(verification)
+      .where(eq(verification.id, verificationRow.id))
+
+    await ctx.reply(
+      "\u2705 Your Telegram account is now linked to MedBuddy! You can use /meds to check today's medications.",
+    )
+  })
+
+  // -------------------------------------------------------------------------
+  // /meds — Today's adherence summary
+  // -------------------------------------------------------------------------
+
+  bot.command("meds", async (ctx) => {
+    const chatId = ctx.from?.id?.toString()
+    if (!chatId) return
+
+    const userRow = await findUserByChatId(chatId)
+    if (!userRow) {
+      await ctx.reply(
+        "Your Telegram account is not linked. Use /start <code> with a code from the MedBuddy app.",
+      )
+      return
+    }
+
+    const { todayStart, todayEnd } = getTaipeiToday()
+
+    const todaysLogs = await db
+      .select({
+        logId: adherenceLog.id,
+        scheduledAt: adherenceLog.scheduledAt,
+        status: adherenceLog.status,
+        medName: medication.name,
+        medNameLocal: medication.nameLocal,
+        medDosage: medication.dosage,
+      })
+      .from(adherenceLog)
+      .innerJoin(medication, eq(adherenceLog.medicationId, medication.id))
+      .where(
+        and(
+          eq(adherenceLog.userId, userRow.id),
+          gte(adherenceLog.scheduledAt, todayStart),
+          lt(adherenceLog.scheduledAt, todayEnd),
+        ),
+      )
+      .orderBy(adherenceLog.scheduledAt)
+
+    if (todaysLogs.length === 0) {
+      await ctx.reply("No medications scheduled for today.")
+      return
+    }
+
+    // Group by time slot for display
+    const grouped: Record<string, typeof todaysLogs> = {}
+    for (const log of todaysLogs) {
+      const slot = getTimeSlot(log.scheduledAt)
+      if (!grouped[slot]) {
+        grouped[slot] = []
+      }
+      grouped[slot].push(log)
+    }
+
+    const slotLabels: Record<string, string> = {
+      morning: "\uD83C\uDF05 Morning",
+      afternoon: "\u2600\uFE0F Afternoon",
+      evening: "\uD83C\uDF06 Evening",
+      bedtime: "\uD83C\uDF19 Bedtime",
+    }
+
+    const slotOrder = ["morning", "afternoon", "evening", "bedtime"]
+    const lines: string[] = ["\uD83D\uDC8A Today's Medications\n"]
+
+    for (const slot of slotOrder) {
+      const logs = grouped[slot]
+      if (!logs || logs.length === 0) continue
+      lines.push(`${slotLabels[slot] ?? slot}`)
+      for (const log of logs) {
+        const emoji = STATUS_EMOJI[log.status] ?? "\u2753"
+        const name = log.medNameLocal ?? log.medName
+        const dosage = log.medDosage ? ` (${log.medDosage})` : ""
+        lines.push(`  ${emoji} ${name}${dosage}`)
+      }
+      lines.push("")
+    }
+
+    // Build inline keyboard for pending items
+    const keyboard = new InlineKeyboard()
+    let hasPending = false
+    for (const log of todaysLogs) {
+      if (log.status === "pending") {
+        hasPending = true
+        const label = log.medNameLocal ?? log.medName
+        keyboard
+          .text(`\u2705 ${label}`, `taken:${log.logId}`)
+          .text(`\u23ED\uFE0F Skip`, `skip:${log.logId}`)
+          .row()
+      }
+    }
+
+    if (hasPending) {
+      await ctx.reply(lines.join("\n"), { reply_markup: keyboard })
+    } else {
+      await ctx.reply(lines.join("\n"))
+    }
+  })
+
+  // -------------------------------------------------------------------------
+  // Inline button callbacks: taken:<logId> / skip:<logId>
+  // -------------------------------------------------------------------------
+
+  bot.on("callback_query:data", async (ctx) => {
+    const data = ctx.callbackQuery.data
+    if (!data) return
+
+    const chatId = ctx.from?.id?.toString()
+    if (!chatId) return
+
+    const userRow = await findUserByChatId(chatId)
+    if (!userRow) {
+      await ctx.answerCallbackQuery({ text: "Account not linked." })
+      return
+    }
+
+    // Parse callback data
+    const [action, logId] = data.split(":")
+    if (!action || !logId) {
+      await ctx.answerCallbackQuery({ text: "Invalid action." })
+      return
+    }
+
+    if (action !== "taken" && action !== "skip") {
+      await ctx.answerCallbackQuery({ text: "Unknown action." })
+      return
+    }
+
+    const newStatus = action === "taken" ? "taken" : "skipped"
+
+    // Verify the log belongs to this user
+    const [existing] = await db
+      .select({ id: adherenceLog.id, status: adherenceLog.status })
+      .from(adherenceLog)
+      .where(
+        and(eq(adherenceLog.id, logId), eq(adherenceLog.userId, userRow.id)),
+      )
+      .limit(1)
+
+    if (!existing) {
+      await ctx.answerCallbackQuery({ text: "Log not found." })
+      return
+    }
+
+    const updateData: { status: string; takenAt?: Date; source: string } = {
+      status: newStatus,
+      source: "telegram",
+    }
+    if (newStatus === "taken") {
+      updateData.takenAt = new Date()
+    }
+
+    await db
+      .update(adherenceLog)
+      .set(updateData)
+      .where(eq(adherenceLog.id, logId))
+
+    const emoji = newStatus === "taken" ? "\u2705" : "\u23ED\uFE0F"
+    await ctx.answerCallbackQuery({
+      text: `${emoji} Marked as ${newStatus}!`,
+    })
+
+    // Update the message to reflect the change
+    try {
+      await ctx.editMessageText(
+        `${emoji} Dose marked as ${newStatus}. Use /meds to see your full schedule.`,
+      )
+    } catch {
+      // Message might not be editable; ignore
+    }
+  })
+
+  // -------------------------------------------------------------------------
+  // Free-text messages: Forward to AI chat
+  // -------------------------------------------------------------------------
+
+  bot.on("message:text", async (ctx) => {
+    const chatId = ctx.from?.id?.toString()
+    if (!chatId) return
+
+    const userRow = await findUserByChatId(chatId)
+    if (!userRow) {
+      await ctx.reply(
+        "Your Telegram account is not linked. Use /start <code> with a code from the MedBuddy app.",
+      )
+      return
+    }
+
+    const userText = ctx.message.text
+    if (!userText || userText.trim().length === 0) return
+
+    // Persist the user message
+    await db.insert(chatMessage).values({
+      userId: userRow.id,
+      role: "user",
+      content: userText,
+      source: "telegram",
+    })
+
+    // Build context for the AI
+    const [meds, adherenceSummary] = await Promise.all([
+      fetchUserMeds(userRow.id),
+      fetchAdherenceSummary(userRow.id),
+    ])
+
+    const systemPrompt = buildSystemPrompt(
+      meds,
+      adherenceSummary,
+      userRow.locale ?? "zh-TW",
+    )
+
+    try {
+      const result = await generateText({
+        model: defaultModel,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userText }],
+      })
+
+      const responseText =
+        result.text || "Sorry, I could not generate a response."
+
+      // Persist the assistant reply
+      await db.insert(chatMessage).values({
+        userId: userRow.id,
+        role: "assistant",
+        content: responseText,
+        source: "telegram",
+      })
+
+      await ctx.reply(responseText)
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error"
+      console.error("Telegram AI chat error:", errorMessage)
+      await ctx.reply(
+        "Sorry, I'm having trouble right now. Please try again later.",
+      )
+    }
+  })
+}
