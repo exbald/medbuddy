@@ -65,7 +65,7 @@
       "heading": "Complete Medication Management",
       "scan": {
         "title": "Prescription Scanning",
-        "description": "Snap a photo to identify medications — AI organizes your info automatically"
+        "description": "Snap a photo to identify medications — AI organizes everything"
       },
       "reminders": {
         "title": "Dose Reminders",
@@ -73,20 +73,26 @@
       },
       "chat": {
         "title": "AI Medication Chat",
-        "description": "Ask medication questions anytime — voice input supported"
+        "description": "Ask medication questions anytime via text or voice — instant answers"
       },
       "caretaker": {
         "title": "Caretaker Connection",
-        "description": "Family members can monitor adherence in real-time for peace of mind"
+        "description": "Family members can monitor adherence in real-time, worry-free"
       },
       "interactions": {
         "title": "Drug Interactions",
-        "description": "Automatic conflict detection to keep your medication safe"
+        "description": "Automatic conflict detection keeps your medications safe and sound"
       },
       "summary": {
         "title": "Health Report Export",
         "description": "Generate a medication report in one click, perfect for doctor visits"
       }
+    },
+    "telegram": {
+      "badge": "No Browser Needed",
+      "heading": "Manage Meds Right From Telegram",
+      "description": "Get reminders, confirm doses with one tap, ask medication questions — all inside Telegram. Perfect for seniors who want it simple.",
+      "cta": "Open Telegram Bot"
     },
     "personas": {
       "heading": "Built For You",

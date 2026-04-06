@@ -16,6 +16,8 @@ import {
   Stethoscope,
   Lock,
   Smartphone,
+  Send,
+  ArrowRight,
 } from "lucide-react";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import {
@@ -242,6 +244,51 @@ export default async function LandingPage({ params }: { params: Promise<{ locale
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Section 4b — Telegram Highlight */}
+        <section className="relative overflow-hidden bg-[#2AABEE]/5 px-6 py-16 md:py-24">
+          <div
+            className="pointer-events-none absolute inset-0 -z-10"
+            aria-hidden="true"
+          >
+            <div className="absolute -top-20 -left-20 h-[400px] w-[400px] rounded-full bg-[#2AABEE]/8 blur-3xl" />
+            <div className="absolute -bottom-20 -right-20 h-[300px] w-[300px] rounded-full bg-[#2AABEE]/6 blur-3xl" />
+          </div>
+
+          <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 md:flex-row md:items-center md:gap-16">
+            <div className="flex shrink-0 items-center justify-center">
+              <div className="relative">
+                <div className="flex h-28 w-28 items-center justify-center rounded-3xl bg-[#2AABEE] text-white shadow-lg shadow-[#2AABEE]/25 md:h-32 md:w-32">
+                  <Send className="h-14 w-14 md:h-16 md:w-16" strokeWidth={1.5} />
+                </div>
+                <div className="absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md">
+                  <Bell className="h-5 w-5 text-[#2AABEE]" />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center text-center md:items-start md:text-left">
+              <span className="inline-flex items-center rounded-full bg-[#2AABEE]/10 px-4 py-1.5 text-sm font-semibold text-[#2AABEE]">
+                {t("telegram.badge")}
+              </span>
+              <h2 className="mt-4 text-2xl font-bold tracking-tight md:text-3xl">
+                {t("telegram.heading")}
+              </h2>
+              <p className="text-muted-foreground mt-3 max-w-lg text-lg leading-relaxed">
+                {t("telegram.description")}
+              </p>
+              <a
+                href="https://t.me/medbuddy_tw_bot?start=welcome"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex h-14 items-center gap-3 rounded-2xl bg-[#2AABEE] px-8 text-lg font-semibold text-white shadow-lg shadow-[#2AABEE]/25 transition-colors hover:bg-[#229ED9]"
+              >
+                {t("telegram.cta")}
+                <ArrowRight className="h-5 w-5" />
+              </a>
             </div>
           </div>
         </section>

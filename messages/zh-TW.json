@@ -56,7 +56,7 @@
       "heading": "全方位用藥管理",
       "scan": {
         "title": "處方箋掃描",
-        "description": "拍照即可辨識藥物，AI 自動整理用藥資訊"
+        "description": "拍照辨識藥物，AI 自動整理用藥資訊"
       },
       "reminders": {
         "title": "服藥提醒",
@@ -64,7 +64,7 @@
       },
       "chat": {
         "title": "AI 藥物問答",
-        "description": "隨時詢問用藥問題，語音也能聊"
+        "description": "隨時用文字或語音詢問，即時獲得解答"
       },
       "caretaker": {
         "title": "照護者連結",
@@ -72,12 +72,18 @@
       },
       "interactions": {
         "title": "藥物交互作用",
-        "description": "自動偵測藥物衝突，守護用藥安全"
+        "description": "自動偵測藥物衝突，守護您的用藥安全"
       },
       "summary": {
         "title": "健康報告匯出",
-        "description": "一鍵產生用藥報告，回診好幫手"
+        "description": "一鍵產生用藥報告，回診時的好幫手"
       }
+    },
+    "telegram": {
+      "badge": "免開網頁",
+      "heading": "用 Telegram 就能吃藥打卡",
+      "description": "收到提醒、一鍵確認服藥、直接問藥物問題 — 全在 Telegram 裡完成，長輩也能輕鬆用。",
+      "cta": "開啟 Telegram 機器人"
     },
     "personas": {
       "heading": "為您而設計",

@@ -112,10 +112,25 @@ function registerHandlers(bot: Bot) {
 
   bot.command("start", async (ctx) => {
     const code = ctx.match?.trim()
-    if (!code) {
-      await ctx.reply(
-        "Welcome to MedBuddy! To link your account, open the MedBuddy app, go to Profile, tap 'Link Telegram', and send me the code with /start <code>.",
-      )
+    if (!code || code === "welcome") {
+      const welcome = [
+        "\u{1F44B} \u6B61\u8FCE\u4F86\u5230 MedBuddy \u85E5\u597D\u53CB\uFF01",
+        "",
+        "\u6211\u53EF\u4EE5\u5E6B\u4F60\uFF1A",
+        "\u{1F4CA} \u67E5\u770B\u4ECA\u65E5\u7528\u85E5\u6642\u9593\u8868",
+        "\u{1F514} \u5B9A\u6642\u63D0\u9192\u5403\u85E5",
+        "\u2705 \u4E00\u9375\u78BA\u8A8D\u670D\u85E5",
+        "\u{1F4AC} \u56DE\u7B54\u85E5\u7269\u76F8\u95DC\u554F\u984C",
+        "",
+        "\u{1F449} \u5148\u8A3B\u518A\u5E33\u865F\uFF0C\u518D\u56DE\u4F86\u9023\u7D50 Telegram\uFF01",
+      ].join("\n")
+
+      const kb = new InlineKeyboard()
+        .url("\u{1F4F1} \u8A3B\u518A\u5E33\u865F", "https://medbuddy.zerodraft.dev/zh-TW/register")
+        .row()
+        .url("\u{1F517} \u5DF2\u6709\u5E33\u865F\uFF1F\u767B\u5165\u9023\u7D50", "https://medbuddy.zerodraft.dev/zh-TW/profile")
+
+      await ctx.reply(welcome, { reply_markup: kb })
       return
     }
 
