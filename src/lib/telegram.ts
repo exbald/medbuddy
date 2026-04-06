@@ -509,7 +509,7 @@ function registerHandlers(bot: Bot) {
             role: "user",
             content: [
               { type: "text", text: userPrompt },
-              { type: "image", image: new URL(uploaded.url) },
+              { type: "image", image: buffer },
             ],
           },
         ],
