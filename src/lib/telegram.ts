@@ -12,6 +12,7 @@ import {
   user,
   verification,
 } from "@/lib/schema"
+import { upload } from "@/lib/storage"
 
 // ---------------------------------------------------------------------------
 // Bot instance (lazy-initialized, singleton across serverless invocations)
@@ -428,6 +429,109 @@ function registerHandlers(bot: Bot) {
       console.error("Telegram AI chat error:", errorMessage)
       await ctx.reply(
         "Sorry, I'm having trouble right now. Please try again later.",
+      )
+    }
+  })
+
+  // -------------------------------------------------------------------------
+  // Photo messages: Forward image (and optional caption) to AI chat
+  // -------------------------------------------------------------------------
+
+  bot.on("message:photo", async (ctx) => {
+    const chatId = ctx.from?.id?.toString()
+    if (!chatId) return
+
+    const userRow = await findUserByChatId(chatId)
+    if (!userRow) {
+      await ctx.reply(
+        "Your Telegram account is not linked. Use /start <code> with a code from the MedBuddy app.",
+      )
+      return
+    }
+
+    const caption = ctx.message.caption?.trim() ?? ""
+
+    try {
+      // Telegram returns multiple photo sizes; the last is the largest
+      const file = await ctx.getFile()
+      const token = process.env.TELEGRAM_BOT_TOKEN
+      if (!token || !file.file_path) {
+        throw new Error("Missing bot token or file path")
+      }
+
+      const downloadUrl = `https://api.telegram.org/file/bot${token}/${file.file_path}`
+      const response = await fetch(downloadUrl)
+      if (!response.ok) {
+        throw new Error(`Failed to download Telegram file: ${response.status}`)
+      }
+      const arrayBuffer = await response.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      // Upload to our storage so the URL is stable + persistable
+      const ext = file.file_path.split(".").pop() || "jpg"
+      const filename = `tg-${userRow.id}-${Date.now()}.${ext}`
+      const uploaded = await upload(buffer, filename, "chat-images", {
+        maxSize: 10 * 1024 * 1024,
+      })
+
+      // Persist the user message with image URL
+      await db.insert(chatMessage).values({
+        userId: userRow.id,
+        role: "user",
+        content: caption,
+        imageUrl: uploaded.url,
+        source: "telegram",
+      })
+
+      // Build context for the AI
+      const [meds, adherenceSummary] = await Promise.all([
+        fetchUserMeds(userRow.id),
+        fetchAdherenceSummary(userRow.id),
+      ])
+
+      const systemPrompt = buildSystemPrompt(
+        meds,
+        adherenceSummary,
+        userRow.locale ?? "zh-TW",
+      )
+
+      const userPrompt =
+        caption ||
+        (userRow.locale === "en"
+          ? "Please analyze this image. If it shows medication or a prescription, identify it and provide relevant information."
+          : "\u8ACB\u5E6B\u6211\u5206\u6790\u9019\u5F35\u5716\u7247\u3002\u5982\u679C\u662F\u85E5\u7269\u6216\u8655\u65B9\u7B7A\uFF0C\u8ACB\u8FA8\u8B58\u4E26\u63D0\u4F9B\u76F8\u95DC\u8CC7\u8A0A\u3002")
+
+      const result = await generateText({
+        model: defaultModel,
+        system: systemPrompt,
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: userPrompt },
+              { type: "image", image: new URL(uploaded.url) },
+            ],
+          },
+        ],
+      })
+
+      const responseText =
+        result.text || "Sorry, I could not analyze that image."
+
+      await db.insert(chatMessage).values({
+        userId: userRow.id,
+        role: "assistant",
+        content: responseText,
+        source: "telegram",
+      })
+
+      await ctx.reply(responseText)
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error"
+      console.error("Telegram photo handler error:", errorMessage)
+      await ctx.reply(
+        "Sorry, I couldn't process that image. Please try again later.",
       )
     }
   })
