@@ -529,10 +529,9 @@ function registerHandlers(bot: Bot) {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error"
-      console.error("Telegram photo handler error:", errorMessage)
-      await ctx.reply(
-        "Sorry, I couldn't process that image. Please try again later.",
-      )
+      const stack = error instanceof Error ? error.stack : ""
+      console.error("Telegram photo handler error:", errorMessage, stack)
+      await ctx.reply(`\u26A0\uFE0F Image error: ${errorMessage}`)
     }
   })
 }
