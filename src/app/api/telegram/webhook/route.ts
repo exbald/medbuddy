@@ -24,6 +24,9 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
     const bot = getBot()
+    if (!bot.isInited()) {
+      await bot.init()
+    }
     await bot.handleUpdate(body)
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error"
