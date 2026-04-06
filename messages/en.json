@@ -39,12 +39,30 @@
   },
   "landing": {
     "hero": {
-      "title": "Your Caring Medication Companion",
-      "subtitle": "Scan prescriptions, set reminders, confirm doses — managing medications made simple and worry-free",
-      "cta": "Get Started",
-      "secondaryCta": "Learn More"
+      "title": "Never Miss a Dose Again",
+      "subtitle": "Scan prescriptions, get timely reminders, keep family informed — managing medications made simple",
+      "cta": "Sign Up Free",
+      "secondaryCta": "See How It Works"
+    },
+    "howItWorks": {
+      "heading": "Simple Three Steps",
+      "steps": [
+        {
+          "title": "Scan Prescription",
+          "description": "Snap a photo and AI builds your medication list automatically"
+        },
+        {
+          "title": "Take On Time",
+          "description": "Timely reminders so you never miss a dose, with one-tap confirmation"
+        },
+        {
+          "title": "Family Peace of Mind",
+          "description": "Caregivers can check adherence in real-time, worry-free"
+        }
+      ]
     },
     "features": {
+      "heading": "Complete Medication Management",
       "scan": {
         "title": "Prescription Scanning",
         "description": "Snap a photo to identify medications — AI organizes your info automatically"
@@ -60,13 +78,84 @@
       "caretaker": {
         "title": "Caretaker Connection",
         "description": "Family members can monitor adherence in real-time for peace of mind"
+      },
+      "interactions": {
+        "title": "Drug Interactions",
+        "description": "Automatic conflict detection to keep your medication safe"
+      },
+      "summary": {
+        "title": "Health Report Export",
+        "description": "Generate a medication report in one click, perfect for doctor visits"
       }
+    },
+    "personas": {
+      "heading": "Built For You",
+      "patient": {
+        "title": "Chronic Care Patients",
+        "description": "Easily manage daily medications — never forget or mix up doses again"
+      },
+      "caregiver": {
+        "title": "Family Caregivers",
+        "description": "Stay informed about your loved one's adherence, even when you're at work"
+      },
+      "professional": {
+        "title": "Medical Professionals",
+        "description": "Recommend a helpful tool that helps patients stay on track"
+      }
+    },
+    "trust": {
+      "heading": "Safe & Trustworthy",
+      "ai": {
+        "title": "AI-Assisted, Never a Replacement",
+        "description": "MedBuddy provides reminders and information, not medical diagnoses or advice. Always follow your doctor's instructions."
+      },
+      "privacy": {
+        "title": "Your Data is Encrypted",
+        "description": "All personal health data is encrypted and stored securely. We never share it with third parties."
+      },
+      "access": {
+        "title": "Works in Your Browser, No App Needed",
+        "description": "Open your browser and start using it — no downloads or installations required."
+      },
+      "disclaimer": "MedBuddy is a medication reminder tool, not a medical device. It does not provide diagnosis, treatment, or medical advice. Please consult a healthcare professional for any health concerns."
+    },
+    "faq": {
+      "heading": "Frequently Asked Questions",
+      "items": [
+        {
+          "question": "Can MedBuddy replace my doctor's advice?",
+          "answer": "No. MedBuddy is a medication reminder and information tool. It does not provide medical diagnoses or advice. Always follow your doctor's instructions for all medication decisions."
+        },
+        {
+          "question": "Is it free to use?",
+          "answer": "MedBuddy is currently completely free. We may introduce premium features in the future, but core features like medication reminders, prescription scanning, and caretaker connection will remain free."
+        },
+        {
+          "question": "Is my data safe?",
+          "answer": "All data is encrypted during transmission and storage. We never share your personal health information with any third party."
+        },
+        {
+          "question": "How does my caregiver connect to my account?",
+          "answer": "You can generate a unique invite code from your profile page and share it with your family. Once they enter the code, they can view your medication adherence. You can unlink at any time."
+        },
+        {
+          "question": "Can I use it even if I'm not tech-savvy?",
+          "answer": "Absolutely! MedBuddy is designed for seniors with large text, big buttons, and simple navigation. You can also receive reminders via Telegram without even opening a web page."
+        }
+      ]
+    },
+    "finalCta": {
+      "heading": "Start Managing Your Medications Effortlessly",
+      "description": "Sign up for free and get started in minutes",
+      "cta": "Sign Up Free"
+    },
+    "footer": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "madeIn": "Made with care in Taiwan"
     },
     "auth": {
       "signIn": "Sign In"
-    },
-    "trust": {
-      "disclaimer": "MedBuddy provides medication information for reference only and cannot replace professional medical advice. Please consult your doctor or pharmacist with any concerns."
     }
   },
   "timeSlots": {

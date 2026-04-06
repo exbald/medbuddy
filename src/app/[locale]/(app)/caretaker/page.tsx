@@ -112,7 +112,7 @@ export default function CaretakerPage() {
         throw new Error(t("loadError"))
       }
       const result = await response.json()
-      setInviteCode(result.code)
+      setInviteCode(result.inviteCode)
     } catch {
       setError(t("loadError"))
     } finally {
@@ -180,11 +180,13 @@ export default function CaretakerPage() {
               onClick={handleGenerateInvite}
               disabled={inviteLoading}
             >
-              {inviteLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Link2 className="mr-2 h-4 w-4" />
-              )}
+              <span className="mr-2 h-4 w-4">
+                {inviteLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Link2 className="h-4 w-4" />
+                )}
+              </span>
               {t("invitePatient")}
             </Button>
             <p className="text-xs text-muted-foreground">

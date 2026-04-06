@@ -39,12 +39,21 @@
   },
   "landing": {
     "hero": {
-      "title": "您的貼心用藥好夥伴",
-      "subtitle": "掃描處方箋、設定提醒、確認服藥，讓管理藥物變得簡單又安心",
-      "cta": "立即開始",
-      "secondaryCta": "了解更多"
+      "title": "再也不怕忘記吃藥",
+      "subtitle": "拍照掃描處方箋、準時服藥提醒、家人安心掌握 — 管理藥物就這麼簡單",
+      "cta": "免費註冊",
+      "secondaryCta": "了解怎麼用"
+    },
+    "howItWorks": {
+      "heading": "簡單三步驟",
+      "steps": [
+        { "title": "掃描處方箋", "description": "拍照上傳，AI 自動建立用藥清單" },
+        { "title": "按時服藥", "description": "準時提醒您吃藥，一鍵確認已服用" },
+        { "title": "家人安心", "description": "照護者即時查看服藥狀況，放心又省心" }
+      ]
     },
     "features": {
+      "heading": "全方位用藥管理",
       "scan": {
         "title": "處方箋掃描",
         "description": "拍照即可辨識藥物，AI 自動整理用藥資訊"
@@ -60,13 +69,84 @@
       "caretaker": {
         "title": "照護者連結",
         "description": "家人即時掌握服藥狀況，安心又放心"
+      },
+      "interactions": {
+        "title": "藥物交互作用",
+        "description": "自動偵測藥物衝突，守護用藥安全"
+      },
+      "summary": {
+        "title": "健康報告匯出",
+        "description": "一鍵產生用藥報告，回診好幫手"
       }
+    },
+    "personas": {
+      "heading": "為您而設計",
+      "patient": {
+        "title": "長期服藥的長輩",
+        "description": "輕鬆管理每天吃藥，再也不怕忘記或吃錯"
+      },
+      "caregiver": {
+        "title": "照顧家人的您",
+        "description": "隨時掌握長輩服藥狀況，工作也能安心"
+      },
+      "professional": {
+        "title": "醫療專業人員",
+        "description": "推薦好用的工具，幫助患者規律服藥"
+      }
+    },
+    "trust": {
+      "heading": "安全可信賴",
+      "ai": {
+        "title": "AI 輔助，不取代醫師",
+        "description": "MedBuddy 提供用藥提醒和資訊，但不提供醫療診斷或建議。請務必遵從您的醫師指示。"
+      },
+      "privacy": {
+        "title": "您的資料安全加密",
+        "description": "所有個人健康資料經過加密儲存，絕不分享給第三方。"
+      },
+      "access": {
+        "title": "手機就能用，免安裝 App",
+        "description": "打開瀏覽器即可使用，不需要下載或安裝任何應用程式。"
+      },
+      "disclaimer": "MedBuddy 是用藥提醒工具，非醫療器材。不提供診斷、治療或醫療建議。如有健康疑慮，請諮詢醫療專業人員。"
+    },
+    "faq": {
+      "heading": "常見問題",
+      "items": [
+        {
+          "question": "MedBuddy 可以取代醫師的建議嗎？",
+          "answer": "不可以。MedBuddy 是用藥提醒和資訊工具，不會提供醫療診斷或建議。所有用藥決定請遵循您的醫師指示。"
+        },
+        {
+          "question": "需要付費嗎？",
+          "answer": "MedBuddy 目前完全免費使用。未來可能推出進階功能，但核心的用藥提醒、掃描和照護者連結將持續免費。"
+        },
+        {
+          "question": "我的資料安全嗎？",
+          "answer": "所有資料經過加密傳輸和儲存。我們不會將您的個人健康資訊分享給任何第三方。"
+        },
+        {
+          "question": "照護者怎麼連結我的帳號？",
+          "answer": "您可以在個人頁面產生專屬邀請碼，分享給家人。他們輸入邀請碼後，就能查看您的服藥狀況。您隨時可以取消連結。"
+        },
+        {
+          "question": "不太會用手機也可以用嗎？",
+          "answer": "可以！MedBuddy 專為長輩設計，字體大、按鈕大、操作簡單。也可以透過 Telegram 收到提醒，不用打開網頁就能確認服藥。"
+        }
+      ]
+    },
+    "finalCta": {
+      "heading": "開始輕鬆管理您的用藥",
+      "description": "免費註冊，幾分鐘即可上手",
+      "cta": "免費註冊"
+    },
+    "footer": {
+      "privacy": "隱私權政策",
+      "terms": "使用條款",
+      "madeIn": "用心打造於台灣"
     },
     "auth": {
       "signIn": "登入"
-    },
-    "trust": {
-      "disclaimer": "MedBuddy 僅提供用藥資訊參考，不能取代醫師診斷。如有疑問，請諮詢您的醫師或藥師。"
     }
   },
   "timeSlots": {

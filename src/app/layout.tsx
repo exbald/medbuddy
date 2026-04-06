@@ -1,15 +1,15 @@
-import { Geist } from "next/font/google"
-import { headers } from "next/headers"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
-import { routing } from "@/i18n/routing"
-import type { Metadata } from "next"
+import { Geist } from "next/font/google";
+import { headers } from "next/headers";
+import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { routing } from "@/i18n/routing";
+import type { Metadata } from "next";
 
 const geist = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-})
+});
 
 export const metadata: Metadata = {
   title: {
@@ -17,7 +17,14 @@ export const metadata: Metadata = {
     template: "%s | MedBuddy",
   },
   description: "您的貼心用藥好夥伴 — 掃描處方箋、設定提醒、確認服藥",
-}
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+};
 
 /**
  * Detects the active locale from the URL path.
@@ -25,22 +32,18 @@ export const metadata: Metadata = {
  * (which is the case for zh-TW with localePrefix: "as-needed").
  */
 async function detectLocaleFromHeaders(): Promise<string> {
-  const h = await headers()
-  const pathname = h.get("x-next-url") ?? h.get("x-invoke-path") ?? ""
+  const h = await headers();
+  const pathname = h.get("x-next-url") ?? h.get("x-invoke-path") ?? "";
   for (const locale of routing.locales) {
     if (pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`) {
-      return locale
+      return locale;
     }
   }
-  return routing.defaultLocale
+  return routing.defaultLocale;
 }
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const lang = await detectLocaleFromHeaders()
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const lang = await detectLocaleFromHeaders();
 
   return (
     <html lang={lang} suppressHydrationWarning>
@@ -56,5 +59,5 @@ export default async function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

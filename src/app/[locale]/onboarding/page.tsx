@@ -62,7 +62,7 @@ export default function OnboardingPage() {
         const data = await res.json()
         if (data.complete) {
           // GET endpoint sets httpOnly cookie server-side, just redirect
-          router.replace("/home")
+          router.replace(data.role === "caretaker" ? "/caretaker" : "/home")
         }
       } catch {
         // Silently fail - user will proceed with onboarding
@@ -193,8 +193,8 @@ export default function OnboardingPage() {
   }, [generatedCode])
 
   const handleFinish = useCallback(() => {
-    router.replace("/home")
-  }, [router])
+    router.replace(role === "caretaker" ? "/caretaker" : "/home")
+  }, [router, role])
 
   return (
     <div className="flex min-h-dvh flex-col items-center px-5 py-8">

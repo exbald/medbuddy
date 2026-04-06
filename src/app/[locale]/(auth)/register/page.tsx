@@ -1,4 +1,5 @@
 import { headers } from "next/headers"
+import { eq } from "drizzle-orm"
 import { getTranslations, setRequestLocale } from "next-intl/server"
 import { SignUpForm } from "@/components/auth/sign-up-form"
 import {
@@ -10,6 +11,8 @@ import {
 } from "@/components/ui/card"
 import { redirect } from "@/i18n/routing"
 import { auth } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { user } from "@/lib/schema"
 
 export default async function RegisterPage({
   params,
@@ -22,7 +25,13 @@ export default async function RegisterPage({
   const session = await auth.api.getSession({ headers: await headers() })
 
   if (session) {
-    redirect({ href: "/home", locale })
+    const [currentUser] = await db
+      .select({ role: user.role })
+      .from(user)
+      .where(eq(user.id, session.user.id))
+      .limit(1)
+    const dest = currentUser?.role === "caretaker" ? "/caretaker" : "/home"
+    redirect({ href: dest, locale })
   }
 
   const t = await getTranslations("authPages.register")
