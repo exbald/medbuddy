@@ -67,10 +67,12 @@ Last updated: 2026-04-06
 ### Telegram Bot
 **Status: Complete**
 - Built with grammy.js, webhook-based (no polling)
+- Landing page has a dedicated Telegram highlight section with a direct CTA linking to `t.me/medbuddy_tw_bot?start=welcome`
 - `/start` (no code) shows friendly welcome with inline "Sign Up" / "Login & Link" buttons for new users arriving from the landing page
 - Account linking: user generates code in Profile, sends `/start <CODE>` to bot
 - `/meds` command: today's schedule with inline buttons to mark taken/skipped
 - Free-text messages forwarded to AI chat (same system prompt as web)
+- Photo messages analyzed by AI vision: downloads from Telegram, uploads to storage for persistence, passes buffer directly to AI (bypasses private blob URLs), supports optional caption as prompt
 - Reminders endpoint scheduled via Vercel Cron (`vercel.json`) — once daily on Hobby plan, can run 4x daily on Pro
 - Webhook secret validation for security; bot lazy-initialized per serverless invocation
 - Files: `src/lib/telegram.ts`, `src/app/api/telegram/`, `vercel.json`
