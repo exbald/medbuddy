@@ -10,17 +10,15 @@ The bot is initialized as a singleton in `src/lib/telegram.ts` using the `TELEGR
 
 ### Webhook Endpoint
 
-`POST /api/telegram/webhook` receives updates from the Telegram Bot API. It passes the raw JSON body to `bot.handleUpdate(body)` and always returns HTTP 200 (even on errors) to prevent Telegram from retrying failed updates.
-
-No authentication is required on this endpoint because Telegram sends updates directly. In production, you can add webhook secret verification if needed.
+`POST /api/telegram/webhook` receives updates from the Telegram Bot API. It validates the `X-Telegram-Bot-Api-Secret-Token` header against `TELEGRAM_WEBHOOK_SECRET`, calls `bot.init()` if not yet initialized (required in serverless), passes the raw JSON body to `bot.handleUpdate(body)`, and always returns HTTP 200 on success (even on errors) to prevent Telegram from retrying failed updates. Returns 401 if the secret is missing or mismatched.
 
 ### Commands
 
-#### `/start <code>` -- Account Linking
+#### `/start [code]` -- Welcome & Account Linking
 
-Links a Telegram account to a MedBuddy user:
+Links a Telegram account to a MedBuddy user, or shows a welcome screen for new users:
 
-1. If no code is provided, replies with instructions.
+1. If no code is provided (or code is `welcome`), replies with a friendly Chinese welcome message and an inline keyboard with two URL buttons: "Sign Up" (links to `/zh-TW/register`) and "Already have an account? Login & Link" (links to `/zh-TW/profile`). This handles users arriving from the landing page CTA.
 2. Looks up the code in the `verification` table (identifier format: `telegram-link:<userId>`).
 3. Checks expiry and deletes expired codes.
 4. Updates the `user` row to set `telegramChatId` to the Telegram chat ID.
@@ -62,9 +60,9 @@ Any text message that is not a command is forwarded to the AI:
 
 ### Reminder Endpoint
 
-`GET /api/telegram/reminders` is designed to be called by an external cron service (e.g., Vercel Cron, Railway cron, or a simple curl job):
+`GET /api/telegram/reminders` is called by Vercel Cron (configured in `vercel.json`):
 
-1. Optionally validates a `CRON_SECRET` bearer token.
+1. Requires a `CRON_SECRET` bearer token (default-deny if not configured).
 2. Determines the current time slot based on the server's clock.
 3. Queries all users with a linked Telegram account (`telegramChatId IS NOT NULL`).
 4. For each user, finds pending adherence logs in the current time slot.
@@ -86,7 +84,8 @@ Any text message that is not a command is forwarded to the AI:
 | Environment Variable | Purpose |
 |---------------------|---------|
 | `TELEGRAM_BOT_TOKEN` | Bot token from @BotFather |
-| `CRON_SECRET` | Optional bearer token to protect the reminders endpoint |
+| `TELEGRAM_WEBHOOK_SECRET` | Required secret token validated on every webhook request |
+| `CRON_SECRET` | Required bearer token to protect the reminders endpoint |
 | `OPENROUTER_API_KEY` | API key for AI chat responses |
 | `OPENROUTER_MODEL` | AI model for text generation |
 
@@ -97,19 +96,22 @@ Register the webhook URL with Telegram:
 ```bash
 curl -X POST "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook" \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://your-domain.com/api/telegram/webhook"}'
+  -d '{"url": "https://your-domain.com/api/telegram/webhook", "secret_token": "<YOUR_WEBHOOK_SECRET>"}'
 ```
 
 ### Setting Up Reminders
 
-Configure an external cron job to hit the reminders endpoint at the desired intervals. For example, four times daily at each slot's default time:
+Reminders are configured via Vercel Cron in `vercel.json`:
 
+```json
+{
+  "crons": [
+    { "path": "/api/telegram/reminders", "schedule": "0 0 * * *" }
+  ]
+}
 ```
-0 8 * * *    curl -H "Authorization: Bearer $CRON_SECRET" https://your-domain.com/api/telegram/reminders
-30 12 * * *  curl -H "Authorization: Bearer $CRON_SECRET" https://your-domain.com/api/telegram/reminders
-0 18 * * *   curl -H "Authorization: Bearer $CRON_SECRET" https://your-domain.com/api/telegram/reminders
-30 21 * * *  curl -H "Authorization: Bearer $CRON_SECRET" https://your-domain.com/api/telegram/reminders
-```
+
+The schedule above runs once daily at 00:00 UTC (08:00 Taipei time), matching the morning slot. Vercel Hobby plans are limited to once-daily cron execution. To send reminders at all four time slots (morning/afternoon/evening/bedtime), upgrade to Vercel Pro and add additional cron entries, or call the endpoint from an external cron service with `Authorization: Bearer $CRON_SECRET`.
 
 ## Common Tasks
 

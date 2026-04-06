@@ -67,12 +67,13 @@ Last updated: 2026-04-06
 ### Telegram Bot
 **Status: Complete**
 - Built with grammy.js, webhook-based (no polling)
+- `/start` (no code) shows friendly welcome with inline "Sign Up" / "Login & Link" buttons for new users arriving from the landing page
 - Account linking: user generates code in Profile, sends `/start <CODE>` to bot
 - `/meds` command: today's schedule with inline buttons to mark taken/skipped
 - Free-text messages forwarded to AI chat (same system prompt as web)
-- Cron-triggered reminders endpoint sends push messages for current time slot
-- Webhook secret validation for security
-- Files: `src/lib/telegram.ts`, `src/app/api/telegram/`
+- Reminders endpoint scheduled via Vercel Cron (`vercel.json`) — once daily on Hobby plan, can run 4x daily on Pro
+- Webhook secret validation for security; bot lazy-initialized per serverless invocation
+- Files: `src/lib/telegram.ts`, `src/app/api/telegram/`, `vercel.json`
 - Docs: `docs/features/telegram.md`
 - Requires: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `CRON_SECRET` env vars
 
@@ -144,7 +145,7 @@ These items require manual configuration, not code changes:
 2. **OpenRouter API key** -- set `OPENROUTER_API_KEY` (get from openrouter.ai/settings/keys)
 3. **Telegram bot** (optional) -- create via @BotFather, set `TELEGRAM_BOT_TOKEN` + `TELEGRAM_WEBHOOK_SECRET`
 4. **Telegram webhook registration** -- call Telegram `setWebhook` API with your deploy URL
-5. **Cron for reminders** (optional) -- external service calls `GET /api/telegram/reminders` with `CRON_SECRET` bearer token, ~4x daily
+5. **Cron for reminders** -- Vercel Cron configured in `vercel.json` (once daily on Hobby plan). For 4x daily reminders, upgrade to Vercel Pro or use an external cron service to call `GET /api/telegram/reminders` with `CRON_SECRET` bearer token
 6. **Vercel Blob** (production only) -- set `BLOB_READ_WRITE_TOKEN` for file storage; local dev uses `public/uploads/`
 
 ## Tech Stack Reference
