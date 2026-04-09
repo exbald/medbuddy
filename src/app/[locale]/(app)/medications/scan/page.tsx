@@ -118,7 +118,8 @@ function frequencyToTiming(frequency: string | undefined): string[] {
 export default function ScanPrescriptionPage() {
   const t = useTranslations("medications")
   const router = useRouter()
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
 
   const [scanState, setScanState] = useState<ScanState>("idle")
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -208,10 +209,9 @@ export default function ScanPrescriptionPage() {
     setScanState("idle")
     setSaveProgress(null)
 
-    // Clear the file input so the same file can be re-selected
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
+    // Clear the file inputs so the same file can be re-selected
+    if (cameraInputRef.current) cameraInputRef.current.value = ""
+    if (galleryInputRef.current) galleryInputRef.current.value = ""
   }, [previewUrl])
 
   const handleRemoveMedication = useCallback((index: number) => {
@@ -279,33 +279,48 @@ export default function ScanPrescriptionPage() {
     <div className="mx-auto max-w-lg space-y-6 p-4">
       <h1 className="text-2xl font-bold">{t("scan.title")}</h1>
 
-      {/* Hidden file input */}
+      {/* Hidden file inputs */}
       <input
-        ref={fileInputRef}
+        ref={cameraInputRef}
         type="file"
         accept="image/*"
         capture="environment"
         className="hidden"
         onChange={handleFileSelect}
       />
+      <input
+        ref={galleryInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileSelect}
+      />
 
-      {/* Idle state: show camera trigger */}
+      {/* Idle state: show camera + gallery triggers */}
       {scanState === "idle" && (
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          className="flex w-full flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/30 p-12 transition-colors hover:border-primary/50 hover:bg-muted/50 active:bg-muted/70"
-        >
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-            <Camera className="h-10 w-10 text-primary" />
-          </div>
-          <div className="space-y-1 text-center">
-            <p className="text-lg font-medium">{t("scan.takePhoto")}</p>
-            <p className="text-sm text-muted-foreground">
-              {t("scan.choosePhoto")}
-            </p>
-          </div>
-        </button>
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={() => cameraInputRef.current?.click()}
+            className="flex w-full flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/30 p-12 transition-colors hover:border-primary/50 hover:bg-muted/50 active:bg-muted/70"
+          >
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+              <Camera className="h-10 w-10 text-primary" />
+            </div>
+            <div className="space-y-1 text-center">
+              <p className="text-lg font-medium">{t("scan.takePhoto")}</p>
+            </div>
+          </button>
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-[48px] w-full"
+            onClick={() => galleryInputRef.current?.click()}
+          >
+            <ImageIcon className="h-5 w-5" />
+            {t("scan.choosePhoto")}
+          </Button>
+        </div>
       )}
 
       {/* Preview state: show image and scan button */}
