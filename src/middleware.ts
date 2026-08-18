@@ -22,7 +22,7 @@ function getLocalePrefix(pathname: string): string {
   return locale === routing.defaultLocale ? "" : `/${locale}`
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Run intl middleware first for locale handling
