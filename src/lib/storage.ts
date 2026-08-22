@@ -1,6 +1,6 @@
 import { existsSync } from "fs";
 import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import { join, resolve } from "path";
 import { put, del, getDownloadUrl } from "@vercel/blob";
 
 /**
@@ -209,8 +209,14 @@ export async function deleteFile(url: string): Promise<void> {
   } else {
     // Delete from local filesystem
     // Extract pathname from URL (e.g., /uploads/avatars/avatar.png -> avatars/avatar.png)
+    const uploadsDir = resolve(process.cwd(), "public", "uploads");
     const pathname = url.replace(/^\/uploads\//, "");
-    const filepath = join(process.cwd(), "public", "uploads", pathname);
+    const filepath = resolve(uploadsDir, pathname);
+
+    // Prevent path traversal by asserting the canonical path stays within the uploads directory
+    if (!filepath.startsWith(uploadsDir) || filepath === uploadsDir) {
+      return;
+    }
 
     // Only attempt to delete if file exists
     if (existsSync(filepath)) {
